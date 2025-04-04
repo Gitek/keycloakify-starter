@@ -31,6 +31,7 @@ export default function LoginUpdatePassword(props: PageProps<Extract<KcContext, 
     const passwordConfirmInput = useRef<HTMLInputElement | null>(null);
     const showPasswordBtn = useRef<HTMLDivElement | null>(null);
     const showPasswordConfirmBtn = useRef<HTMLDivElement | null>(null);
+    const cancelUpdateKcBtn = useRef<HTMLButtonElement | null>(null);
 
     function updatePasswordField() {
         if (passwordInput.current && kcPasswordInput.current) {
@@ -83,6 +84,12 @@ export default function LoginUpdatePassword(props: PageProps<Extract<KcContext, 
         }
     }
 
+    function triggerCancelUpdate() {
+        if (cancelUpdateKcBtn.current) {
+            cancelUpdateKcBtn.current.click();
+        }
+    }
+
     return (
         <Template
             kcContext={kcContext}
@@ -113,19 +120,19 @@ export default function LoginUpdatePassword(props: PageProps<Extract<KcContext, 
                 </div>
                 <LogoutOtherSessions kcClsx={kcClsx} i18n={i18n}/>
                 <div className={"btns-wrapper"}>
-                    {/*{isAppInitiatedAction && (*/}
-                    <button
-                        id={"cancel-password-update-btn"}
-                        className={kcClsx("kcButtonClass", "kcButtonDefaultClass", "kcButtonLargeClass")}
-                        type="submit"
-                        name="cancel-aia"
-                        value="true"
-                    >
-                        {msg("doCancel")}
-                    </button>
-                    {/* )}*/}
+                    {isAppInitiatedAction && (
+                        <button
+                            id={"cancel-password-update-btn"}
+                            className={kcClsx("kcButtonClass", "kcButtonDefaultClass", "kcButtonLargeClass")}
+                            type="submit"
+                            name="cancel-aia"
+                            value="true"
+                            onClick={triggerCancelUpdate}
+                        >
+                            {msg("doCancel")}
+                        </button>
+                    )}
                     <div id={"trigger-submit-btn"} onClick={triggerUpdatePassSubmit}>{msgStr("changePassword")}</div>
-
                 </div>
             </div>
             <form id="kc-passwd-update-form" ref={updatePassForm} className={kcClsx("kcFormClass")}
@@ -210,6 +217,7 @@ export default function LoginUpdatePassword(props: PageProps<Extract<KcContext, 
                         {isAppInitiatedAction && (
                             <button
                                 className={kcClsx("kcButtonClass", "kcButtonDefaultClass", "kcButtonLargeClass")}
+                                ref={cancelUpdateKcBtn}
                                 type="submit"
                                 name="cancel-aia"
                                 value="true"
