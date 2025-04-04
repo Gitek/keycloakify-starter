@@ -1,0 +1,577 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+@import url('https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.6.0/css/all.min.css');
+
+/*This file contains all the custom styles for the excite-theme*/
+
+/*Styles directed at storybook ids or classes are only used while developing using storybook.
+They do not effect keycloak when used outside storybook development*/
+#storybook-root {
+    height: 100vh;
+}
+
+/*End of storybook styles*/
+
+.kcHtmlClass {
+    height: 100vh;
+}
+
+#root {
+    height: 100%;
+}
+
+/*Country Code Picker*/
+.iti__flag {
+    background-image: url("./assets/flags.png");
+}
+
+.iti.iti--allow-dropdown {
+    width: 100%;
+}
+
+.iti__flag-container {
+    margin-left: 5px;
+}
+
+.iti__country-list {
+    color: black;
+}
+
+/*End of Country Code Picker styles*/
+
+/*Hiding default keycloak forms*/
+#kc-form,
+#kc-reset-password-form,
+#kc-passwd-update-form {
+    display: none;
+}
+
+/*Hiding default error message element*/
+.kcAlertTitleClass {
+    display: none;
+}
+
+.kcBodyClass {
+    background-color: rgb(3, 12, 30) !important;
+    color: #fff;
+    width: 100%;
+    height: 100%;
+    font-family: 'Montserrat', sans-serif !important;
+    font-size: 14px;
+    margin: 0;
+}
+
+.kcLoginClass {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+}
+
+.body-wrapper {
+    display: flex;
+    width: 100%;
+    height: 85%;
+    flex-direction: row-reverse;
+    justify-content: center;
+    box-sizing: border-box;
+    padding: 20px 20px 0 20px;
+}
+
+.kcLocaleListClass {
+    display: none;
+}
+
+.kcHeaderClass {
+    display: flex;
+    align-self: stretch;
+    width: 50%;
+    box-sizing: border-box;
+}
+
+.kcHeaderWrapperClass {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+}
+
+#kc-page-title {
+    display: none;
+}
+
+#login-logo-svg {
+    background-position: center;
+    position: relative;
+    height: 56%;
+    max-width: 550px;
+    min-width: 550px;
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: center;
+    background-repeat: no-repeat;
+}
+
+.login-qr-svg {
+    background-position: center;
+    position: relative;
+    height: 45%;
+    max-width: 550px;
+    min-width: 550px;
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: center;
+    background-repeat: no-repeat;
+}
+
+#login-qr-svg-wrapper {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    flex-direction: column;
+    height: 100%;
+}
+
+.close-qr-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 40px;
+    width: 40px;
+    border-radius: 36px;
+    background: #ffffff;
+    color: #151E33;
+    cursor: pointer;
+    user-select: none;
+}
+
+.close-qr-btn:after {
+    font-family: "Font Awesome 6 Free", sans-serif;
+    content: '\f00d';
+    font-size: 24px;
+    font-weight: 900;
+}
+
+.app-stores-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    max-width: 550px;
+    min-width: 550px;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.app-store-btn {
+    height: 50px;
+    user-select: none;
+}
+
+.app-store-img {
+    height: 50px;
+}
+
+.play-store-btn {
+    height: 60px;
+    user-select: none;
+}
+
+.play-store-img {
+    height: 60px;
+}
+
+.kcFormHeaderClass {
+    display: none;
+}
+
+.kcFormCardClass {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50%;
+    /*padding: 0 30px;*/
+}
+
+#kc-content {
+    width: 60%;
+    max-width: 500px;
+}
+
+#username-wrapper {
+    margin-bottom: 30px;
+}
+
+#shown-username-input,
+#reset-pass-username-input {
+    all: unset;
+    width: 100%;
+    max-width: 100%;
+    background: #151E33;
+    font-weight: 600;
+    font-size: 14px;
+    border-radius: 30px;
+    height: 40px;
+    border: none;
+    padding-left: 52px;
+    padding-right: 14px;
+    color: #fff;
+    box-sizing: border-box;
+    margin-bottom: 20px;
+    margin-top: 5px;
+}
+
+#shown-username-input::placeholder,
+#reset-pass-username-input::placeholder {
+    color: #fff;
+}
+
+#password-wrapper,
+#password-confirm-wrapper {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    max-width: 100%;
+    background: #151E33;
+    font-weight: 600;
+    font-size: 14px;
+    border-radius: 30px;
+    height: 40px;
+    border: none;
+    padding: 0 14px;
+    color: #fff;
+    box-sizing: border-box;
+    margin-bottom: 30px;
+    margin-top: 5px;
+}
+
+#shown-password-input,
+#shown-password-confirm-input {
+    all: unset;
+    width: 100%;
+    height: 100%;
+}
+
+#shown-password-input::placeholder,
+#shown-password-confirm-input::placeholder {
+    color: #fff;
+}
+
+#toggle-shown-password {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    cursor: pointer;
+    height: 100%;
+    width: 40px;
+}
+
+.kcInputGroup {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#trigger-submit-btn,
+#trigger-reset-pass-submit-btn,
+#cancel-password-update-btn {
+    all: unset;
+    background: #ffffff;
+    color: #151E33;
+    width: 100%;
+    min-height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 30px !important;
+    text-align: center;
+    cursor: pointer;
+    font-size: 18px;
+    font-weight: 600;
+    user-select: none;
+}
+
+.kcFormSocialAccountSectionClass {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.kcFormSocialAccountSectionClass hr {
+    display: none;
+}
+
+.kcFormOptionsWrapperClass {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    margin-bottom: 50px;
+    padding-top: 15px;
+    font-size: 16px;
+}
+
+.trigger-forgot-password-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #a5c5f4;
+    font-size: 18px;
+    margin: 30px auto 0 auto;
+    cursor: pointer;
+    user-select: none;
+    width: fit-content;
+}
+
+.kcSignUpClass {
+    display: none;
+}
+
+/*Identity providers*/
+.kcFormSocialAccountListClass {
+    all: unset;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    align-items: center;
+}
+
+.kcFormSocialAccountListClass li {
+    all: unset;
+    width: 100%;
+}
+
+.kcFormSocialAccountListButtonClass {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 14px;
+    font-weight: bold;
+    width: 100%;
+    border-radius: 30px;
+    font-size: 16px;
+    background-color: #030C1E;
+    color: #fff;
+    overflow: hidden;
+    transition: width 0.3s ease, border-radius 0.2s ease;
+    position: relative;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    box-sizing: border-box;
+    margin-bottom: 20px;
+    text-decoration: none;
+}
+
+.kcFormSocialAccountListButtonClass:hover {
+    background-color: #151E33;
+}
+
+.kcCommonLogoIdP {
+    position: absolute;
+    left: 14px;
+    font-size: 20px;
+}
+
+.excite-footer {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    height: 15%;
+    width: 100%;
+    padding: 0 20px;
+    box-sizing: border-box;
+}
+
+.excite-app-cta-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 50%;
+    margin-top: 20px;
+}
+
+.excite-app-small-screen-btns {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 50%;
+    gap: 20px;
+}
+
+.toggle-qr-wrapper {
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+    font-weight: 600;
+    font-size: 16px;
+    cursor: pointer;
+    user-select: none;
+}
+
+.toggle-qr-wrapper:hover {
+    text-decoration: underline;
+}
+
+.mobile-icon:after {
+    font-family: "Font Awesome 6 Free";
+    content: '\f3cf';
+    padding-right: 5px;
+    font-size: 20px;
+    font-weight: 900;
+    font-style: normal;
+}
+
+.excite-legal {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 50%;
+}
+
+.excite-logo-small {
+    width: 125px;
+}
+
+.excite-legal-link {
+    text-align: center;
+    color: #fff;
+    text-decoration: underline;
+    font-size: 16px;
+}
+
+.excite-legal-link:visited {
+    color: #fff;
+}
+
+.hidden {
+    display: none !important;
+    visibility: hidden !important;
+}
+
+.invisible {
+    visibility: hidden !important;
+}
+
+#back-to-login-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #a5c5f4;
+    font-size: 18px;
+    margin: 30px auto 0 auto;
+    cursor: pointer;
+    user-select: none;
+    width: fit-content;
+}
+
+#logout-sessions-checkbox-wrapper * {
+    cursor: pointer;
+    user-select: none;
+}
+
+#logout-sessions {
+    margin: 0 8px 0 0;
+    transform: scale(1.2);
+}
+
+.btns-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 40px;
+}
+
+#cancel-password-update-btn {
+    background-color: rgb(3, 12, 30);
+    color: #fff;
+    border: 2px solid #FFF;
+    font-weight: 600;
+}
+
+.user-shown-form-heading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    margin-bottom: 40px;
+}
+
+.user-shown-input-label {
+    font-size: 16px;
+}
+
+.social-providers-header-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    margin: 40px 0;
+}
+
+.heading-divider {
+    height: 1px;
+    background-color: #fff;
+    width: 40%;
+}
+
+.social-providers-heading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-grow: 1;
+    font-size: 16px;
+}
+
+/*Media Queries*/
+@media (max-width: 1200px) {
+    .kcHeaderClass {
+        display: none !important;
+    }
+
+    .kcFormCardClass {
+        width: 100%;
+    }
+
+    .excite-app-cta-wrapper {
+        display: none;
+    }
+
+    .excite-app-small-screen-btns {
+        display: flex;
+    }
+
+    .excite-footer {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .kcFormSocialAccountListButtonClass {
+        margin-bottom: 0;
+        margin-top: 20px;
+    }
+
+    .excite-legal {
+        display: none;
+    }
+
+    .kcFormSocialAccountSectionClass h2 {
+        display: none;
+    }
+}
+
+@media (max-width: 768px) {
+    #kc-content {
+        width: 90%;
+    }
+
+    .excite-app-small-screen-btns .excite-logo-small {
+        display: none;
+    }
+}
+
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    .iti__flag {
+        background-image: url("./assets/flags@2x.png");
+    }
+}
