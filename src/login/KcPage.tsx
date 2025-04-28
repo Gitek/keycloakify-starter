@@ -18,6 +18,24 @@ const LoginUpdatePassword = lazy(
 const UserProfileFormFields = lazy(
     () => import("keycloakify/login/UserProfileFormFields")
 );
+const LoginIdpLinkConfirm = lazy(
+    () => import("./pages/LoginIdpLinkConfirm")
+);
+const IdpReviewUserProfile = lazy(
+    () => import("./pages/IdpReviewUserProfile")
+);
+const LoginPageExpired = lazy(
+    () => import("./pages/LoginPageExpired")
+);
+const LoginIdpLinkEmail = lazy(
+    () => import("./pages/LoginIdpLinkEmail")
+);
+const Error = lazy(
+    () => import("./pages/Error")
+);
+const SelectAuthenticator = lazy(
+    () => import("./pages/SelectAuthenticator")
+);
 
 const doMakeUserConfirmPassword = true;
 
@@ -49,6 +67,56 @@ export default function KcPage(props: { kcContext: KcContext }) {
                     case "login-update-password.ftl":
                         return (
                             <LoginUpdatePassword
+                                {...{kcContext, i18n, classes}}
+                                Template={Template}
+                                doUseDefaultCss={false}
+                            />
+                        );
+                    case "login-idp-link-confirm.ftl":
+                        return (
+                            <LoginIdpLinkConfirm
+                                {...{kcContext, i18n, classes}}
+                                Template={Template}
+                                doUseDefaultCss={false}
+                            />
+                        );
+                    case "idp-review-user-profile.ftl":
+                        return (
+                            <IdpReviewUserProfile
+                                {...{kcContext, i18n, classes}}
+                                Template={Template}
+                                doUseDefaultCss={false}
+                                UserProfileFormFields={UserProfileFormFields}
+                                doMakeUserConfirmPassword={doMakeUserConfirmPassword}
+                            />
+                        );
+                    case "login-page-expired.ftl":
+                        return (
+                            <LoginPageExpired
+                                {...{kcContext, i18n, classes}}
+                                Template={Template}
+                                doUseDefaultCss={false}
+                            />
+                        );
+                    case "login-idp-link-email.ftl":
+                        return (
+                            <LoginIdpLinkEmail
+                                {...{kcContext, i18n, classes}}
+                                Template={Template}
+                                doUseDefaultCss={false}
+                            />
+                        );
+                    case "error.ftl":
+                        return (
+                            <Error
+                                {...{kcContext, i18n, classes}}
+                                Template={Template}
+                                doUseDefaultCss={false}
+                            />
+                        );
+                    case "select-authenticator.ftl":
+                        return (
+                            <SelectAuthenticator
                                 {...{kcContext, i18n, classes}}
                                 Template={Template}
                                 doUseDefaultCss={false}

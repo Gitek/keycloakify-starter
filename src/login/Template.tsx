@@ -89,21 +89,33 @@ export default function Template(props: TemplateProps<KcContext, I18n>) {
         if (kcContext?.message) {
             if (kcContext.message.type && kcContext.message.type === "error" && kcContext.message.summary) {
                 displayIziError(kcContext.message.summary);
+                if (kcContext.pageId === "login.ftl") {
+                    resetLoginButton();
+                }
             }
         }
 
         if (messagesPerField.existsError("username")) {
             displayIziError(messagesPerField.getFirstError("username"));
+            if (kcContext.pageId === "login.ftl") {
+                resetLoginButton();
+            }
         }
 
         if (messagesPerField.existsError("password")) {
             if (messagesPerField.getFirstError("username") != messagesPerField.getFirstError("password")) {
                 displayIziError(messagesPerField.getFirstError("password"));
+                if (kcContext.pageId === "login.ftl") {
+                    resetLoginButton();
+                }
             }
         }
 
         if (messagesPerField.existsError("password-confirm")) {
             displayIziError(messagesPerField.get("password-confirm"));
+            if (kcContext.pageId === "login.ftl") {
+                resetLoginButton();
+            }
         }
 
         return () => observer.disconnect(); // cleanup
@@ -142,8 +154,17 @@ export default function Template(props: TemplateProps<KcContext, I18n>) {
             title: "",
             message: errorMessage,
             position: "bottomCenter",
-            timeout: 5000,
+            timeout: 7000,
         });
+    }
+
+    function resetLoginButton() {
+        const button = document.getElementById("trigger-submit-btn") as HTMLDivElement | null;
+
+        if (!button) return;
+
+        button.innerHTML = msgStr("login");
+        button.classList.remove("disabled");
     }
 
     return (
@@ -265,7 +286,7 @@ export default function Template(props: TemplateProps<KcContext, I18n>) {
                                             <span className={kcClsx("kcFeedbackInfoIcon")}></span>}
                                     </div>
                                     <span
-                                        className={kcClsx("kcAlertTitleClass")}
+                                        className={(kcContext.pageId === 'login-idp-link-confirm.ftl' ? "show-error " : "") + kcClsx("kcAlertTitleClass")}
                                         dangerouslySetInnerHTML={{
                                             __html: kcSanitize(message.summary)
                                         }}

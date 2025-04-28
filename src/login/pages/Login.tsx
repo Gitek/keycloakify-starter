@@ -65,11 +65,18 @@ export default function Login(props: PageProps<Extract<KcContext, { pageId: "log
             if (kcPasswordInput.current.value != "" && kcUsernameInput.current.value != "") {
                 // Submit keycloak Login form
 
+                const shownSubmitBtn = document.getElementById("trigger-submit-btn") as HTMLDivElement | null;
+
+                if (shownSubmitBtn) {
+                    shownSubmitBtn.innerHTML = `<span id="spinner"></span>`;
+                    shownSubmitBtn.classList.add("disabled");
+                }
+
                 // Add countrycode if numeric and submit
                 if (isNumeric(usernameInput.current.value)) {
                     if (usernameInput.current.getAttribute("country-code")) {
-                        let currUsername = usernameInput.current.value;
-                        let prefix = usernameInput.current.getAttribute("country-code");
+                        const currUsername = usernameInput.current.value;
+                        const prefix = usernameInput.current.getAttribute("country-code");
 
                         kcUsernameInput.current.value = prefix + currUsername;
                     }
@@ -95,6 +102,12 @@ export default function Login(props: PageProps<Extract<KcContext, { pageId: "log
 
     function isNumeric(n: string): boolean {
         return n !== '' && !isNaN(parseFloat(n)) && isFinite(Number(n));
+    }
+
+    function enterToAttemptLogin(e: React.KeyboardEvent<HTMLInputElement>) {
+        if (e.key === 'Enter') {
+            triggerLoginSubmit();
+        }
     }
 
     return (
@@ -162,11 +175,11 @@ export default function Login(props: PageProps<Extract<KcContext, { pageId: "log
 
                 <div id={"username-wrapper"}>
                     <input id={"shown-username-input"} ref={usernameInput} type={"username"}
-                           placeholder={msgStr("usernameOrEmail")} onInput={updateUsernameField}/>
+                           placeholder={msgStr("usernameOrEmail")} onInput={updateUsernameField} onKeyDown={enterToAttemptLogin}/>
                 </div>
                 <div id={"password-wrapper"}>
                     <input id={"shown-password-input"} ref={passwordInput} type={"password"}
-                           placeholder={msgStr("password")} onInput={updatePasswordField}/>
+                           placeholder={msgStr("password")} onInput={updatePasswordField} onKeyDown={enterToAttemptLogin}/>
                     <div id={"toggle-shown-password"} ref={toggleShownBtn} className={"fa-regular fa-eye-slash"}
                          onClick={toggleShownPassword}></div>
                 </div>
