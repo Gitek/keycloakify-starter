@@ -36,6 +36,10 @@ They do not effect keycloak when used outside storybook development*/
     color: black;
 }
 
+.iti__selected-flag {
+    padding: 0 6px 0 16px;
+}
+
 /*End of Country Code Picker styles*/
 
 /*Hiding default keycloak forms*/
@@ -216,11 +220,11 @@ They do not effect keycloak when used outside storybook development*/
     max-width: 100%;
     background: #151E33;
     font-weight: 600;
-    font-size: 14px;
+    font-size: 16px;
     border-radius: 30px;
-    height: 40px;
+    height: 50px;
     border: none;
-    padding-left: 52px;
+    padding-left: 68px;
     padding-right: 14px;
     color: #fff;
     box-sizing: border-box;
@@ -241,9 +245,9 @@ They do not effect keycloak when used outside storybook development*/
     max-width: 100%;
     background: #151E33;
     font-weight: 600;
-    font-size: 14px;
+    font-size: 16px;
     border-radius: 30px;
-    height: 40px;
+    height: 50px;
     border: none;
     padding: 0 14px;
     color: #fff;
@@ -257,6 +261,7 @@ They do not effect keycloak when used outside storybook development*/
     all: unset;
     width: 100%;
     height: 100%;
+    margin-left: 8px;
 }
 
 #shown-password-input::placeholder,
@@ -287,7 +292,7 @@ They do not effect keycloak when used outside storybook development*/
     background: #ffffff;
     color: #151E33;
     width: 100%;
-    min-height: 40px;
+    min-height: 50px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -323,7 +328,7 @@ They do not effect keycloak when used outside storybook development*/
     align-items: center;
     justify-content: center;
     color: #a5c5f4;
-    font-size: 18px;
+    font-size: 16px;
     margin: 30px auto 0 auto;
     cursor: pointer;
     user-select: none;
@@ -364,7 +369,7 @@ They do not effect keycloak when used outside storybook development*/
     position: relative;
     border: 1px solid rgba(255, 255, 255, 0.5);
     box-sizing: border-box;
-    margin-bottom: 20px;
+    margin-bottom: 26px;
     text-decoration: none;
 }
 
@@ -445,6 +450,7 @@ They do not effect keycloak when used outside storybook development*/
     color: #fff;
     text-decoration: underline;
     font-size: 16px;
+    margin-top: -8px;
 }
 
 .excite-legal-link:visited {
@@ -512,7 +518,7 @@ They do not effect keycloak when used outside storybook development*/
     align-items: center;
     justify-content: center;
     width: 100%;
-    margin: 40px 0;
+    margin: 60px 0;
 }
 
 .heading-divider {
