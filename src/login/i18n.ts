@@ -42,7 +42,8 @@ const {useI18n, ofTypeI18n} = i18nBuilder
             doTryAnotherWay: "Prøv en annen måte",
             backToApplication: "Tilbake til applikasjon",
             errorTitle: "Vi beklager...",
-            loginChooseAuthenticator: "Velg påloggingsmetode"
+            loginChooseAuthenticator: "Velg påloggingsmetode",
+            capsWarning: "Caps Lock er på"
         }
     }).build();
 

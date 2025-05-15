@@ -32,6 +32,7 @@ export default function Login(props: PageProps<Extract<KcContext, { pageId: "log
     const usernameInput = useRef<HTMLInputElement | null>(null);
     const toggleShownBtn = useRef<HTMLDivElement | null>(null);
     const forgotPasswordKc = useRef<HTMLAnchorElement | null>(null);
+    const capsWarningElement = useRef<HTMLSpanElement | null>(null);
 
     function updateUsernameField() {
         if (usernameInput.current && kcUsernameInput.current) {
@@ -57,7 +58,6 @@ export default function Login(props: PageProps<Extract<KcContext, { pageId: "log
             }
 
         }
-
     }
 
     function triggerLoginSubmit() {
@@ -104,9 +104,21 @@ export default function Login(props: PageProps<Extract<KcContext, { pageId: "log
         return n !== '' && !isNaN(parseFloat(n)) && isFinite(Number(n));
     }
 
-    function enterToAttemptLogin(e: React.KeyboardEvent<HTMLInputElement>) {
+    function toggleCapsWarning(state: boolean) {
+        if (capsWarningElement.current) {
+            capsWarningElement.current.style.display = state ? 'block' : 'none';
+        }
+    }
+
+    function keydownHandler(e: React.KeyboardEvent<HTMLInputElement>) {
         if (e.key === 'Enter') {
             triggerLoginSubmit();
+        } else {
+            if (e.getModifierState("CapsLock")) {
+                toggleCapsWarning(true);
+            } else {
+                toggleCapsWarning(false);
+            }
         }
     }
 
@@ -175,13 +187,14 @@ export default function Login(props: PageProps<Extract<KcContext, { pageId: "log
 
                 <div id={"username-wrapper"}>
                     <input id={"shown-username-input"} ref={usernameInput} type={"username"}
-                           placeholder={msgStr("usernameOrEmail")} onInput={updateUsernameField} onKeyDown={enterToAttemptLogin}/>
+                           placeholder={msgStr("usernameOrEmail")} onInput={updateUsernameField} onKeyDown={keydownHandler}/>
                 </div>
                 <div id={"password-wrapper"}>
                     <input id={"shown-password-input"} ref={passwordInput} type={"password"}
-                           placeholder={msgStr("password")} onInput={updatePasswordField} onKeyDown={enterToAttemptLogin}/>
+                           placeholder={msgStr("password")} onInput={updatePasswordField} onKeyDown={keydownHandler}/>
                     <div id={"toggle-shown-password"} ref={toggleShownBtn} className={"fa-regular fa-eye-slash"}
                          onClick={toggleShownPassword}></div>
+                    <span className={"caps-warning-message"} ref={capsWarningElement}>{msgStr("capsWarning")}</span>
                 </div>
                 <div id={"trigger-submit-btn"} onClick={triggerLoginSubmit}>{msgStr("login")}</div>
                 {realm.resetPasswordAllowed && (
