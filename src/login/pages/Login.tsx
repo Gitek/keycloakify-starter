@@ -94,12 +94,30 @@ export default function Login(props: PageProps<Extract<KcContext, { pageId: "log
         }
     }
 
-    function triggerForgotPasswordNav() {
-        if (forgotPasswordKc.current) {
-            forgotPasswordKc.current.click();
+    //If going to use keycloak forgot password, use this function
+    // function triggerForgotPasswordNav() {
+    //     if (forgotPasswordKc.current) {
+    //         forgotPasswordKc.current.click();
+    //     }
+    // }
+
+    //If going to use old forgot password, use this function
+    function triggerOldForgotPassword() {
+        const params = new URL(window.location.toString()).searchParams;
+        const client_id = params.get("client_id");
+
+        if (client_id) {
+            if (client_id === "Excite-demo") {
+                window.location.href = "https://demo.excite.cx/pmws.dll/gxl.forgotpassword?from_kc=true&client=demo";
+            } else if (client_id === "excite-web") {
+                window.location.href = "https://excite.cx/pmws.dll/gxl.forgotpassword?from_kc=true&client=prod";
+            } else {
+                window.location.href = "http://localhost/gitekx/pmws.dll/gxl.forgotpassword?from_kc=true&client=local";
+            }
+        } else {
+            window.location.href = "http://localhost/gitekx/pmws.dll/gxl.forgotpassword?from_kc=true&client=local";
         }
     }
-
     function isNumeric(n: string): boolean {
         return n !== '' && !isNaN(parseFloat(n)) && isFinite(Number(n));
     }
@@ -197,11 +215,11 @@ export default function Login(props: PageProps<Extract<KcContext, { pageId: "log
                     <span className={"caps-warning-message"} ref={capsWarningElement}>{msgStr("capsWarning")}</span>
                 </div>
                 <div id={"trigger-submit-btn"} onClick={triggerLoginSubmit}>{msgStr("login")}</div>
-                {realm.resetPasswordAllowed && (
-                    <span className={"trigger-forgot-password-btn"} onClick={triggerForgotPasswordNav}>
+                {/*{realm.resetPasswordAllowed && (*/}
+                    <span className={"trigger-forgot-password-btn"} onClick={triggerOldForgotPassword}>
                         {msgStr("doForgotPassword")}
                     </span>
-                )}
+                {/*)}*/}
             </div>
             <div id="kc-form">
                 <div id="kc-form-wrapper">
