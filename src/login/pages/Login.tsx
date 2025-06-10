@@ -103,13 +103,12 @@ export default function Login(props: PageProps<Extract<KcContext, { pageId: "log
 
     //If going to use old forgot password, use this function
     function triggerOldForgotPassword() {
-        const params = new URL(window.location.toString()).searchParams;
-        const client_id = params.get("client_id");
+        const url = window.location.toString();
 
-        if (client_id) {
-            if (client_id === "Excite-demo") {
+        if (url) {
+            if (url.includes("demo.excite.cx") || url.includes("excitedemo.cx")) {
                 window.location.href = "https://demo.excite.cx/pmws.dll/gxl.forgotpassword?from_kc=true&client=demo";
-            } else if (client_id === "excite-web") {
+            } else if (url.includes("api.excite.cx") || url.includes("excite.cx") && !url.includes("beholder")) {
                 window.location.href = "https://excite.cx/pmws.dll/gxl.forgotpassword?from_kc=true&client=prod";
             } else {
                 window.location.href = "http://localhost/gitekx/pmws.dll/gxl.forgotpassword?from_kc=true&client=local";
@@ -118,6 +117,7 @@ export default function Login(props: PageProps<Extract<KcContext, { pageId: "log
             window.location.href = "http://localhost/gitekx/pmws.dll/gxl.forgotpassword?from_kc=true&client=local";
         }
     }
+
     function isNumeric(n: string): boolean {
         return n !== '' && !isNaN(parseFloat(n)) && isFinite(Number(n));
     }
