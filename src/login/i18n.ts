@@ -7,7 +7,7 @@ const {useI18n, ofTypeI18n} = i18nBuilder
     .withThemeName<ThemeName>()
     .withCustomTranslations({
         no: {
-            usernameOrEmail: "Mobilnummer",
+            usernameOrEmail: "Brukernavn",
             password: "Passord",
             doForgotPassword: "Glemt passord?",
             rememberMe: "Husk meg",
