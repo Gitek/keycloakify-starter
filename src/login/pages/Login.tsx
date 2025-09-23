@@ -202,7 +202,6 @@ export default function Login(props: PageProps<Extract<KcContext, { pageId: "log
         >
             {/*    Form shown to user on login*/}
             <div className="user-shown-form-login">
-                <p>hello</p>
                 <div id={"username-wrapper"}>
                     <input id={"shown-username-input"} ref={usernameInput} type={"username"}
                            placeholder={msgStr("usernameOrEmail")} onInput={updateUsernameField} onKeyDown={keydownHandler}/>
@@ -250,7 +249,7 @@ export default function Login(props: PageProps<Extract<KcContext, { pageId: "log
                                         className={kcClsx("kcInputClass")}
                                         name="username"
                                         defaultValue={login.username ?? ""}
-                                        type="text"
+                                        type="search"
                                         autoFocus
                                         autoComplete="off"
                                         aria-invalid={messagesPerField.existsError("username", "password")}
@@ -279,7 +278,7 @@ export default function Login(props: PageProps<Extract<KcContext, { pageId: "log
                                         ref={kcPasswordInput}
                                         className={kcClsx("kcInputClass")}
                                         name="password"
-                                        type="password"
+                                        type="search"
                                         autoComplete="off"
                                         aria-invalid={messagesPerField.existsError("username", "password")}
                                     />
