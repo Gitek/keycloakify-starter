@@ -80,6 +80,7 @@ export default function Template(props: TemplateProps<KcContext, I18n>) {
                 updateCountry();
 
                 input.dataset.itiInitialized = "true";
+                input.autocomplete = "username";
             }
         });
 

@@ -204,11 +204,11 @@ export default function Login(props: PageProps<Extract<KcContext, { pageId: "log
             <div className="user-shown-form-login">
 
                 <div id={"username-wrapper"}>
-                    <input id={"shown-username-input"} ref={usernameInput} type={"username"} autoComplete={"username"}
+                    <input id={"shown-username-input"} ref={usernameInput} type={"username"}
                            placeholder={msgStr("usernameOrEmail")} onInput={updateUsernameField} onKeyDown={keydownHandler}/>
                 </div>
                 <div id={"password-wrapper"}>
-                    <input id={"shown-password-input"} ref={passwordInput} type={"password"}
+                    <input id={"shown-password-input"} ref={passwordInput} type={"password"} autoComplete={"current-password"}
                            placeholder={msgStr("password")} onInput={updatePasswordField} onKeyDown={keydownHandler}/>
                     <div id={"toggle-shown-password"} ref={toggleShownBtn} className={"fa-regular fa-eye-slash"}
                          onClick={toggleShownPassword}></div>
@@ -252,7 +252,7 @@ export default function Login(props: PageProps<Extract<KcContext, { pageId: "log
                                         defaultValue={login.username ?? ""}
                                         type="text"
                                         autoFocus
-                                        autoComplete="username"
+                                        autoComplete="off"
                                         aria-invalid={messagesPerField.existsError("username", "password")}
                                     />
                                     {messagesPerField.existsError("username", "password") && (
@@ -280,7 +280,7 @@ export default function Login(props: PageProps<Extract<KcContext, { pageId: "log
                                         className={kcClsx("kcInputClass")}
                                         name="password"
                                         type="password"
-                                        autoComplete="current-password"
+                                        autoComplete="off"
                                         aria-invalid={messagesPerField.existsError("username", "password")}
                                     />
                                 </PasswordWrapper>
