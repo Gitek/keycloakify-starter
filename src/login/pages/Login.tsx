@@ -204,7 +204,7 @@ export default function Login(props: PageProps<Extract<KcContext, { pageId: "log
             <div className="user-shown-form-login">
 
                 <div id={"username-wrapper"}>
-                    <input id={"shown-username-input"} ref={usernameInput} type={"username"}
+                    <input id={"shown-username-input"} ref={usernameInput} type={"username"} autoComplete={"username"}
                            placeholder={msgStr("usernameOrEmail")} onInput={updateUsernameField} onKeyDown={keydownHandler}/>
                 </div>
                 <div id={"password-wrapper"}>
