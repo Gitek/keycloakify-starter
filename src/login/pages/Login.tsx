@@ -79,10 +79,13 @@ export default function Login(props: PageProps<Extract<KcContext, { pageId: "log
                         const prefix = usernameInput.current.getAttribute("country-code");
 
                         kcUsernameInput.current.value = prefix + currUsername;
-                    }
-                }
+                        loginForm.current.submit();
+                        kcUsernameInput.current.value = currUsername;
 
-                loginForm.current.submit();
+                    }
+                } else {
+                    loginForm.current.submit();
+                }
 
             } else if (kcPasswordInput.current.value == "" && kcUsernameInput.current.value != "") {
                 passwordInput.current.focus();
@@ -202,12 +205,13 @@ export default function Login(props: PageProps<Extract<KcContext, { pageId: "log
         >
             {/*    Form shown to user on login*/}
             <div className="user-shown-form-login">
+
                 <div id={"username-wrapper"}>
                     <input id={"shown-username-input"} ref={usernameInput} type={"username"}
                            placeholder={msgStr("usernameOrEmail")} onInput={updateUsernameField} onKeyDown={keydownHandler}/>
                 </div>
                 <div id={"password-wrapper"}>
-                    <input id={"shown-password-input"} ref={passwordInput} type={"password"} autoComplete={"current-password"}
+                    <input id={"shown-password-input"} ref={passwordInput} type={"password"}
                            placeholder={msgStr("password")} onInput={updatePasswordField} onKeyDown={keydownHandler}/>
                     <div id={"toggle-shown-password"} ref={toggleShownBtn} className={"fa-regular fa-eye-slash"}
                          onClick={toggleShownPassword}></div>
@@ -235,15 +239,23 @@ export default function Login(props: PageProps<Extract<KcContext, { pageId: "log
                         >
                             {!usernameHidden && (
                                 <div className={kcClsx("kcFormGroupClass")}>
+                                    <label htmlFor="username" className={kcClsx("kcLabelClass")}>
+                                        {!realm.loginWithEmailAllowed
+                                            ? msg("username")
+                                            : !realm.registrationEmailAsUsername
+                                                ? msg("usernameOrEmail")
+                                                : msg("email")}
+                                    </label>
                                     <input
                                         tabIndex={2}
                                         id="username"
                                         ref={kcUsernameInput}
                                         className={kcClsx("kcInputClass")}
+                                        name="username"
                                         defaultValue={login.username ?? ""}
-                                        type="search"
+                                        type="text"
                                         autoFocus
-                                        autoComplete="off"
+                                        autoComplete="username"
                                         aria-invalid={messagesPerField.existsError("username", "password")}
                                     />
                                     {messagesPerField.existsError("username", "password") && (
@@ -260,14 +272,18 @@ export default function Login(props: PageProps<Extract<KcContext, { pageId: "log
                             )}
 
                             <div className={kcClsx("kcFormGroupClass")}>
+                                <label htmlFor="password" className={kcClsx("kcLabelClass")}>
+                                    {msg("password")}
+                                </label>
                                 <PasswordWrapper kcClsx={kcClsx} i18n={i18n} passwordInputId="password">
                                     <input
                                         tabIndex={3}
                                         id="password"
                                         ref={kcPasswordInput}
                                         className={kcClsx("kcInputClass")}
-                                        type="search"
-                                        autoComplete="off"
+                                        name="password"
+                                        type="password"
+                                        autoComplete="current-password"
                                         aria-invalid={messagesPerField.existsError("username", "password")}
                                     />
                                 </PasswordWrapper>
