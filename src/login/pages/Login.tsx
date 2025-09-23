@@ -235,19 +235,11 @@ export default function Login(props: PageProps<Extract<KcContext, { pageId: "log
                         >
                             {!usernameHidden && (
                                 <div className={kcClsx("kcFormGroupClass")}>
-                                    <label htmlFor="username" className={kcClsx("kcLabelClass")}>
-                                        {!realm.loginWithEmailAllowed
-                                            ? msg("username")
-                                            : !realm.registrationEmailAsUsername
-                                                ? msg("usernameOrEmail")
-                                                : msg("email")}
-                                    </label>
                                     <input
                                         tabIndex={2}
                                         id="username"
                                         ref={kcUsernameInput}
                                         className={kcClsx("kcInputClass")}
-                                        name="username"
                                         defaultValue={login.username ?? ""}
                                         type="search"
                                         autoFocus
@@ -268,16 +260,12 @@ export default function Login(props: PageProps<Extract<KcContext, { pageId: "log
                             )}
 
                             <div className={kcClsx("kcFormGroupClass")}>
-                                <label htmlFor="password" className={kcClsx("kcLabelClass")}>
-                                    {msg("password")}
-                                </label>
                                 <PasswordWrapper kcClsx={kcClsx} i18n={i18n} passwordInputId="password">
                                     <input
                                         tabIndex={3}
                                         id="password"
                                         ref={kcPasswordInput}
                                         className={kcClsx("kcInputClass")}
-                                        name="password"
                                         type="search"
                                         autoComplete="off"
                                         aria-invalid={messagesPerField.existsError("username", "password")}
