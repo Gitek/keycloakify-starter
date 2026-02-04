@@ -18,7 +18,7 @@ yarn install # Or use an other package manager, just be sure to delete the yarn.
 
 # How to customize the theme
 
-[Documentation](https://docs.keycloakify.dev/customization-strategies)
+[Documentation](https://docs.keycloakify.dev/css-customization)
 
 # Building the theme
 
@@ -34,7 +34,7 @@ npm run build-keycloak-theme
 ```
 
 Note that by default Keycloakify generates multiple .jar files for different versions of Keycloak.  
-You can customize this behavior, see documentation [here](https://docs.keycloakify.dev/targeting-specific-keycloak-versions).
+You can customize this behavior, see documentation [here](https://docs.keycloakify.dev/features/compiler-options/keycloakversiontargets).
 
 # Initializing the account theme
 
