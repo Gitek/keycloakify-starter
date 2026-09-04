@@ -110,7 +110,7 @@ export default function Login(props: PageProps<Extract<KcContext, { pageId: "log
 
         if (url) {
             if (url.includes("demo.excite.cx") || url.includes("excitedemo.cx")) {
-                window.location.href = "https://demo.excite.cx/pmws.dll/gxl.forgotpassword?from_kc=true&client=demo";
+                window.location.href = "https://legacydemo.excite.cx/pmws.dll/gxl.forgotpassword?from_kc=true&client=demo";
             } else if (url.includes("api.excite.cx") || url.includes("excite.cx") && !url.includes("beholder")) {
                 window.location.href = "https://excite.cx/pmws.dll/gxl.forgotpassword?from_kc=true&client=prod";
             } else {
