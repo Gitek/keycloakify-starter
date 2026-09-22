@@ -1,0 +1,43 @@
+# CodeQL: ukentlig sikkerhetsskanning (avansert oppsett).
+#
+# Erstatter GitHubs standardoppsett, som kjørte på hver push og hver PR og
+# gjettet språk fra filendelser (eierbeslutning 2026-09-22: ukentlig er nok,
+# og kun språket repoet faktisk har). Funn vises under Security → Code
+# scanning som før. Kjør manuelt ved behov: Actions → CodeQL → Run workflow.
+name: CodeQL
+
+on:
+  schedule:
+    - cron: "16 5 * * 0"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  security-events: write
+  actions: read
+
+concurrency:
+  group: codeql-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  analyze:
+    name: Analyze (${{ matrix.language }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [javascript-typescript]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: github/codeql-action/init@v3
+        with:
+          languages: ${{ matrix.language }}
+          # Ingen bygg: CodeQL leser kildekoden direkte. Gjelder også Java
+          # og C# siden 2024, så skanningen krever ikke at prosjektet kan
+          # bygges på runneren.
+          build-mode: none
+      - uses: github/codeql-action/analyze@v3
+        with:
+          category: "/language:${{ matrix.language }}"
