@@ -978,6 +978,15 @@ They do not effect keycloak when used outside storybook development*/
     max-width: 320px;
 }
 
+.pwless-typo-hint {
+    margin: 0 0 16px;
+    text-align: center;
+    font-size: 13px;
+    line-height: 1.5;
+    color: #9aa6bd;
+    max-width: 320px;
+}
+
 /* "Logg inn med passord i stedet" / "Endre adresse" — the way out, always present. */
 .pwless-alt-link {
     display: block;

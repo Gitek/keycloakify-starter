@@ -284,6 +284,9 @@ export default function Login(props: PageProps<Extract<KcContext, { pageId: "log
                     {msgStr("pwlessWaitingDot")}
                 </p>
                 <p className="pwless-validity">{msgStr("pwlessKeepOpen")}</p>
+                {/* The way out for the person who mistyped: nothing else on this screen
+                    explains why a link they are entitled to never arrived. */}
+                <p className="pwless-typo-hint" hidden={!pwlessChannelKnown}>{msgStr("pwlessTypoHint")}</p>
                 <button type="button" id="pwless-resend-btn" onClick={() => pwlessSend("resend")}
                         disabled={pwlessCooldown > 0}>
                     {pwlessCooldown > 0

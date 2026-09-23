@@ -66,9 +66,13 @@ const {useI18n, ofTypeI18n} = i18nBuilder
             // an address would let anyone with a phone list harvest the email behind it.
             pwlessSending: "Sender lenke …",
             pwlessSendingBody: "Vi finner ut hvor vi best får tak i deg.",
-            pwlessSentToEmail: "Vi sendte deg en lenke. Trykk på knappen i e-posten, så logger vi deg inn her.",
-            pwlessSentToSms: "Vi sendte deg en lenke. Trykk på lenken i meldingen, så logger vi deg inn her.",
-            pwlessSentToPush: "Vi sendte deg et varsel i appen. Trykk på det, så logger vi deg inn her.",
+            pwlessTypoHint: "Fikk du ingenting? Sjekk at du skrev riktig, og prøv igjen.",
+            // "Hvis kontoen finnes" is shown to everyone, existing or not. It does NOT restore the
+            // uniform response — the channel above still varies — but it is honest, and it is the
+            // only thing on the screen that explains a typo to the person who made one.
+            pwlessSentToEmail: "Hvis kontoen finnes, har vi sendt deg en lenke dit. Trykk på knappen i e-posten, så logger vi deg inn her.",
+            pwlessSentToSms: "Hvis kontoen finnes, har vi sendt deg en lenke dit. Trykk på lenken i meldingen, så logger vi deg inn her.",
+            pwlessSentToPush: "Hvis kontoen finnes, har vi sendt deg et varsel. Trykk på det, så logger vi deg inn her.",
             pwlessWaitingDot: "Venter på at du trykker på lenken",
             pwlessKeepOpen: "Du kan la denne siden stå åpen. Lenken virker i 10 minutter.",
             pwlessResend: "Send ny lenke",
