@@ -440,7 +440,7 @@ export const Pwless_Entry_NoLastUsed: Story = {
 /** STEP 1 — the dedicated page, identifier carried over from the login field. */
 export const Pwless_Page_Ask: Story = {
     render: () => <KcPageStory kcContext={{ locale: no, social: socials,
-        pwlessView: "request", pwlessIdentifier: "kevin@retailx.no" } as any} />
+        pwlessView: "request", pwlessIdentifier: "khai@retailx.no" } as any} />
 };
 
 /** STEP 1 — arrived with nothing typed, so the field is empty. */
@@ -451,13 +451,13 @@ export const Pwless_Page_Ask_Empty: Story = {
 /** STEP 2 — confirmation, EMAIL. Address in full, resend locked for 45 s. */
 export const Pwless_Page_Sent_Email: Story = {
     render: () => <KcPageStory kcContext={{ locale: no, social: socials,
-        pwlessView: "sent", pwlessMock: "waiting", pwlessIdentifier: "kevin@retailx.no" } as any} />
+        pwlessView: "sent", pwlessMock: "waiting", pwlessIdentifier: "khai@retailx.no" } as any} />
 };
 
 /** STEP 2 — a long address, to prove it wraps rather than widening the card. */
 export const Pwless_Page_Sent_LongEmail: Story = {
     render: () => <KcPageStory kcContext={{ locale: no, social: socials, pwlessView: "sent",
-        pwlessMock: "waiting", pwlessIdentifier: "kevin.alexander.nordmann@retailx-norge.no" } as any} />
+        pwlessMock: "waiting", pwlessIdentifier: "khai.alexander.nordmann@retailx-norge.no" } as any} />
 };
 
 /** STEP 2 — confirmation, SMS. Only reached when the user has no email AND the
@@ -470,13 +470,19 @@ export const Pwless_Page_Sent_Sms: Story = {
 /** STEP 2 — confirmation, PUSH. The first channel tried for a returning app user. */
 export const Pwless_Page_Sent_Push: Story = {
     render: () => <KcPageStory kcContext={{ locale: no, social: socials, pwlessView: "sent",
-        pwlessMock: "waiting", pwlessChannel: "push", pwlessIdentifier: "kevin@retailx.no" } as any} />
+        pwlessMock: "waiting", pwlessChannel: "push", pwlessIdentifier: "khai@retailx.no" } as any} />
 };
 
-/** RECOVERY — an expired or already-used link. Address pre-filled, one button. */
+/** STEP 3, RESENT — says out loud that the previous link is now dead. */
+export const Pwless_Page_Resent: Story = {
+    render: () => <KcPageStory kcContext={{ locale: no, social: socials, pwlessView: "sent",
+        pwlessMock: "waiting", pwlessResent: true, pwlessIdentifier: "khai@retailx.no" } as any} />
+};
+
+/** RECOVERY — an expired or already-used link. Address pre-filled AND editable. */
 export const Pwless_Page_Recovery: Story = {
     render: () => <KcPageStory kcContext={{ locale: no, social: socials,
-        pwlessView: "recovery", pwlessMock: "expired", pwlessIdentifier: "kevin@retailx.no" } as any} />
+        pwlessView: "recovery", pwlessMock: "expired", pwlessIdentifier: "khai@retailx.no" } as any} />
 };
 
 export const Pwless_Page_Empty_Error: Story = {

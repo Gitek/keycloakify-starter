@@ -213,6 +213,7 @@ They do not effect keycloak when used outside storybook development*/
     margin-bottom: 30px;
 }
 
+#pwless-recovery-input,
 #shown-username-input,
 #reset-pass-username-input,
 #pwless-username-input {
@@ -233,6 +234,7 @@ They do not effect keycloak when used outside storybook development*/
     margin-top: 5px;
 }
 
+#pwless-recovery-input::placeholder,
 #shown-username-input::placeholder,
 #reset-pass-username-input::placeholder,
 #pwless-username-input::placeholder {
@@ -795,7 +797,8 @@ They do not effect keycloak when used outside storybook development*/
    outranks the UA sheet's `[hidden]{display:none}`, so a hidden element with an
    explicit `display` would otherwise stay visible. Scoped to this form. */
 .user-shown-form-login [hidden],
-.user-shown-form-login[hidden] { display: none !important; }
+.user-shown-form-login[hidden],
+.pwless-hideable[hidden] { display: none !important; }
 
 /* Resend: secondary treatment (same as #cancel-password-update-btn) */
 #pwless-resend-btn {
@@ -812,7 +815,7 @@ They do not effect keycloak when used outside storybook development*/
     align-items: center;
     justify-content: center;
     width: fit-content;
-    margin: 18px auto 0 auto;
+    margin: 4px auto 0 auto;
     color: #a5c5f4;
     font-size: 16px;
     text-decoration: underline;
@@ -835,12 +838,16 @@ They do not effect keycloak when used outside storybook development*/
     font-size: 15px;
 }
 
-/* "· sist brukt" marker on the IdP the user came back to. */
+/* "· sist brukt" — its own line under the provider name, so the button keeps one
+   centred column rather than a lopsided row. */
+.kcFormSocialAccountListButtonClass { flex-wrap: wrap; }
 .social-lastused {
-    margin-left: 6px;
+    flex-basis: 100%;
+    margin-top: 2px;
     font-size: 13px;
     font-weight: 400;
     color: #9aa6bd;
+    text-align: center;
     white-space: nowrap;
 }
 
@@ -851,12 +858,11 @@ They do not effect keycloak when used outside storybook development*/
 #pwless-resend-btn:disabled,
 #pwless-recovery-btn:disabled { opacity: .5; cursor: default; }
 
-/* --- the dedicated screen --- */
+/* --- the dedicated screens (Beslutningsnotat layout) --- */
 #pwless-page {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    gap: 14px;
+    align-items: stretch;
 }
 
 #pwless-page .pwless-step {
@@ -866,80 +872,124 @@ They do not effect keycloak when used outside storybook development*/
     width: 100%;
 }
 
-#pwless-field-wrapper { width: 100%; }
+/* The ask step is LEFT-aligned: it is a form, and a left edge is what makes the
+   field, its label and the heading read as one column. */
+#pwless-page .pwless-step--left { align-items: flex-start; }
+
+.pwless-step-top { width: 100%; }
+
+/* "← Tilbake", top left. Always the first thing in the tab order on these screens. */
+.pwless-back {
+    display: inline-flex;
+    align-items: center;
+    margin-bottom: 18px;
+    color: #a5c5f4;
+    font-size: 15px;
+    cursor: pointer;
+    user-select: none;
+}
+.pwless-back:hover { color: #cfe0fb; }
+.pwless-back:focus-visible { outline: 2px solid #a5c5f4; outline-offset: 3px; border-radius: 2px; }
+
+.pwless-title {
+    margin: 0 0 8px;
+    font-size: 21px;
+    font-weight: 700;
+    color: #fff;
+    line-height: 1.3;
+}
+.pwless-title--center { text-align: center; }
 
 .pwless-intro {
-    margin: 0;
-    text-align: center;
+    margin: 0 0 18px;
     font-size: 15px;
     line-height: 1.5;
-    color: #e8ecf4;
+    color: #cfd6e4;
     max-width: 340px;
 }
+.pwless-intro--center { text-align: center; }
 
-.pwless-check {
-    margin: 0 0 6px;
-    text-align: center;
-    font-size: 16px;
-    color: #fff;
-    font-weight: 600;
-}
-/* The address shown back to the user, in full (§3.5). Must wrap: a long address on a
-   360px screen would otherwise push the card sideways. */
-.pwless-sent-to {
-    margin: 0 0 10px;
-    text-align: center;
-    font-size: 15px;
-    color: #cfd6e4;
-    max-width: 320px;
-}
-.pwless-address {
-    font-weight: 600;
-    color: #fff;
-    overflow-wrap: anywhere;
-}
+#pwless-field-wrapper,
+#pwless-recovery-wrapper { width: 100%; }
 
-/* --- recovery screen (§3.5) --- */
-.pwless-recovery-title {
-    margin: 0 0 6px;
-    text-align: center;
-    font-size: 18px;
-    font-weight: 600;
-    color: #fff;
-}
-.pwless-recovery-intro {
-    margin: 0 0 14px;
-    text-align: center;
-    font-size: 14px;
-    line-height: 1.5;
-    color: #cfd6e4;
-    max-width: 330px;
-}
-#pwless-recovery-address {
-    margin-bottom: 16px;
-    padding: 12px 18px;
-    border-radius: 12px;
-    background: rgba(255, 255, 255, 0.07);
-    font-size: 16px;
-    text-align: center;
-    max-width: 100%;
-}
-
-.pwless-validity {
-    margin: 0 0 14px;
-    text-align: center;
+/* The hint sits UNDER the field, naming what the field holds without shouting. */
+.pwless-field-hint {
+    margin: 8px 0 18px 4px;
     font-size: 13px;
     color: #9aa6bd;
 }
 
-.pwless-waiting-hint {
-    margin: 0 0 8px;
+/* Status circle above the heading: green when something is in flight and fine,
+   red when the link is dead. Colour is never the only signal — the heading says it too. */
+.pwless-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 52px;
+    height: 52px;
+    margin: 4px auto 14px;
+    border-radius: 50%;
+}
+.pwless-icon--ok   { background: rgba(38, 166, 108, 0.18); color: #3ddc97; }
+.pwless-icon--dead { background: rgba(214, 69, 69, 0.18);  color: #ff8a75; }
+
+.pwless-sent-to {
+    margin: 0 0 16px;
     text-align: center;
-    font-size: 14px;
-    line-height: 1.5;
+    font-size: 15px;
+    line-height: 1.55;
     color: #cfd6e4;
+    max-width: 340px;
+}
+.pwless-address {
+    font-weight: 700;
+    color: #fff;
+    overflow-wrap: anywhere;
+}
+
+/* "Venter på at du trykker på lenken" — the line that tells the user this tab is
+   the receiver, not a dead end. */
+.pwless-live {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    margin: 0 0 14px;
+    font-size: 14px;
+    color: #e8ecf4;
+}
+.pwless-dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: #3ddc97;
+    flex: 0 0 auto;
+    animation: pwless-pulse 1.6s ease-in-out infinite;
+}
+@keyframes pwless-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
+@media (prefers-reduced-motion: reduce) { .pwless-dot { animation: none; } }
+
+.pwless-validity {
+    margin: 0 0 16px;
+    text-align: center;
+    font-size: 13px;
+    line-height: 1.5;
+    color: #9aa6bd;
     max-width: 320px;
 }
+
+/* "Logg inn med passord i stedet" / "Endre adresse" — the way out, always present. */
+.pwless-alt-link {
+    display: block;
+    width: fit-content;
+    margin: 18px auto 0;
+    color: #a5c5f4;
+    font-size: 15px;
+    cursor: pointer;
+    user-select: none;
+}
+.pwless-alt-link:hover { color: #cfe0fb; }
+.pwless-alt-link:focus-visible { outline: 2px solid #a5c5f4; outline-offset: 3px; border-radius: 2px; }
 
 .pwless-status {
     margin: 10px 0 0;
@@ -954,14 +1004,3 @@ They do not effect keycloak when used outside storybook development*/
 .pwless-status--ratelimited,
 .pwless-status--expired { color: #ff8a75; }
 
-.pwless-spinner {
-    width: 34px;
-    height: 34px;
-    margin-bottom: 6px;
-    border-radius: 50%;
-    border: 3px solid rgba(255, 255, 255, 0.25);
-    border-top-color: #ffffff;
-    animation: pwless-spin 0.9s linear infinite;
-}
-@keyframes pwless-spin { to { transform: rotate(360deg); } }
-@media (prefers-reduced-motion: reduce) { .pwless-spinner { animation: none; } }

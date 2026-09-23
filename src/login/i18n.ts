@@ -44,32 +44,48 @@ const {useI18n, ofTypeI18n} = i18nBuilder
             errorTitle: "Vi beklager...",
             loginChooseAuthenticator: "Velg påloggingsmetode",
             capsWarning: "Caps Lock er på",
-            // --- Passordløs innlogging (magic link) — Phase 0 copy deck, for review ---
+            // --- Passordløs innlogging (magic link) — Phase 0 copy deck ---
+            // Wording follows Khai's Beslutningsnotat screens. Where the note says "e-post"
+            // we stay channel-neutral, because the channel is server-decided (plan §3.4)
+            // and unknown at the point the user is asked.
             pwlessButton: "Logg inn uten passord",
-            pwlessIntro: "Vi sender deg en lenke som logger deg inn.",
+            pwlessTitle: "Logg inn uten passord",
+            pwlessIntro: "Vi sender deg en lenke. Trykk på den, så er du inne. Ingenting å huske.",
             pwlessFieldLabel: "E-post eller mobilnummer",
+            pwlessFieldHint: "E-posten eller mobilnummeret ditt",
             pwlessSendLink: "Send lenke",
+            pwlessBack: "Tilbake",
+            pwlessUsePassword: "Logg inn med passord i stedet",
+            pwlessChangeAddress: "Endre adresse",
+
+            // Confirmation
             pwlessCheckEmail: "Sjekk e-posten din",
             pwlessCheckSms: "Sjekk SMS-en din",
             pwlessCheckPush: "Sjekk appen din",
-            // Full address, not masked: we echo back what the user just typed, so it reveals
-            // nothing they don't already know — and a typo is the #1 reason the link never arrives.
-            pwlessSentTo: "Vi sendte en lenke til",
-            pwlessValidFor: "Lenken er gyldig i 10 minutter.",
-            pwlessWaiting: "Venter på at du åpner lenken …",
-            pwlessWaitingHint: "Åpne lenken på enheten der du mottok den. Du blir logget inn her.",
-            pwlessMissingIdentifier: "Fyll inn e-post eller mobilnummer.",
-            pwlessInvalid: "Skriv inn en gyldig e-postadresse eller et mobilnummer.",
-            pwlessResend: "Send på nytt",
-            pwlessResendIn: "Send på nytt om {0} s",
-            pwlessExpired: "Lenken er utløpt. Send en ny.",
-            pwlessError: "Noe gikk galt. Prøv igjen.",
-            pwlessRateLimited: "For mange forsøk. Vent litt før du prøver igjen.",
-            pwlessCancel: "Avbryt",
+            // Address shown in FULL — we echo what the user typed, so it reveals nothing they
+            // don't know, and a typo is the commonest reason the link never arrives.
+            pwlessSentToEmail: "Vi sendte en lenke til {0}. Trykk på knappen i e-posten, så logger vi deg inn her.",
+            pwlessSentToSms: "Vi sendte en lenke til {0}. Trykk på lenken i meldingen, så logger vi deg inn her.",
+            pwlessSentToPush: "Vi sendte en lenke til appen på {0}. Trykk på varselet, så logger vi deg inn her.",
+            pwlessWaitingDot: "Venter på at du trykker på lenken",
+            pwlessKeepOpen: "Du kan la denne siden stå åpen. Lenken virker i 10 minutter.",
+            pwlessResend: "Send ny lenke",
+            pwlessResendIn: "Send ny lenke om {0} s",
+
+            // Resent — says out loud that the previous link is now dead, so nobody hunts for it.
+            pwlessResentTitle: "Ny lenke er sendt",
+            pwlessResentBody: "Sjekk {0} igjen. Den forrige lenken slutter å virke nå.",
+
             // Recovery — "den viktigste skjermen i hele flyten". Never a dead end.
             pwlessRecoveryTitle: "Lenken virker ikke lenger",
-            pwlessRecoveryIntro: "Lenker er gyldige i 10 minutter, og kan bare brukes én gang. Vi sender deg en ny.",
+            pwlessRecoveryIntro: "Lenker varer i 10 minutter og kan bare brukes én gang. Vi sender deg en ny med det samme.",
             pwlessRecoverySend: "Send ny lenke",
+
+            // Errors
+            pwlessMissingIdentifier: "Fyll inn e-post eller mobilnummer.",
+            pwlessInvalid: "Skriv inn en gyldig e-postadresse eller et mobilnummer.",
+            pwlessError: "Noe gikk galt. Prøv igjen.",
+            pwlessRateLimited: "For mange forsøk. Vent litt før du prøver igjen.",
             pwlessLastUsed: "sist brukt"
         }
     }).build();

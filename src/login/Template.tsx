@@ -62,6 +62,10 @@ export default function Template(props: TemplateProps<KcContext, I18n>) {
                 // Initializing the country picker
                 const iti = intlTelInput(input, {
                     separateDialCode: false,
+                    // Explicit, not inherited from onlyCountries order: a field initialised
+                    // while hidden otherwise resolved to no country and rendered a blank flag.
+                    // Matches the house rule — no country code means Norwegian.
+                    initialCountry: "no",
                     preferredCountries: ["no"],
                     onlyCountries: ["no", "se", "dk", "fi", "is", "gb", "ie", "ee", "lv", "lt", "nl"],
                     localizedCountries: {},

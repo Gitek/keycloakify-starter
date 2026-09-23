@@ -28,14 +28,16 @@ export default function Login(props: PageProps<Extract<KcContext, { pageId: "log
     // ---------------------------------------------------------------------------
     // Passordløs innlogging — PHASE 0 VISUAL MOCK ONLY.
     // No backend, no network. Local state so every screen can be reviewed.
-    // Stories force a state via kcContext.pwlessMock / pwlessView / pwlessChannel.
+    // Stories force a screen via kcContext.pwlessView / pwlessMock / pwlessChannel.
     // Phase 5 replaces the mock handler with a POST to url.loginAction.
     //
-    // Follows plan §3.5 (Beslutningsnotat): entry is a TEXT LINK at the bottom, the address is
-    // shown in FULL, the link lives 10 minutes, resend unlocks after 45 s, and an expired link
-    // lands on its own recovery screen rather than a dead end.
+    // Layout and wording follow the screens in Khai's Beslutningsnotat:
+    // entry is a text link BELOW the IdP buttons, each passwordless screen is its own
+    // step with "← Tilbake" at the top, the address is shown in FULL, the link lives
+    // 10 minutes, resend unlocks after 45 s, and a dead link lands on a recovery screen
+    // with the address pre-filled and editable — never a dead end.
     // ---------------------------------------------------------------------------
-    type PwlessState = "idle" | "missing" | "invalid" | "sending" | "waiting" | "expired" | "error" | "ratelimited";
+    type PwlessState = "idle" | "missing" | "invalid" | "sending" | "waiting" | "error" | "ratelimited";
     /** Which screen we're on. "off" = the normal login form. */
     type PwlessView = "off" | "request" | "sent" | "recovery";
     /** Which channel the message went out on. Server-decided in Phase 4 (§3.4) — mocked here. */
@@ -49,17 +51,17 @@ export default function Login(props: PageProps<Extract<KcContext, { pageId: "log
 
     const [pwlessView, setPwlessView] = useState<PwlessView>(pwlessMockView ?? "off");
     const [pwlessState, setPwlessState] = useState<PwlessState>(pwlessMock ?? "idle");
-    const [pwlessCooldown, setPwlessCooldown] = useState(pwlessMockView === "sent" ? 41 : 0);
+    const [pwlessCooldown, setPwlessCooldown] = useState(pwlessMockView === "sent" ? PWLESS_RESEND_SECONDS : 0);
+    const [pwlessResent, setPwlessResent] = useState<boolean>(((kcContext as any).pwlessResent as boolean) ?? false);
     const [pwlessIdentifier, setPwlessIdentifier] = useState<string>(
         ((kcContext as any).pwlessIdentifier as string | undefined) ?? "");
     const pwlessFieldRef = useRef<HTMLInputElement | null>(null);
+    const pwlessRecoveryFieldRef = useRef<HTMLInputElement | null>(null);
 
     /**
      * MOCK channel choice. In production this is NOT ours to make: the plugin hands the user's
      * contact facts to communication-service, which resolves push → email → SMS and applies the
-     * per-enterprise SMS greenlight, then reports back which channel it used (plan §3.4).
-     * Here we only need something plausible to render, so: whatever the story forces, else
-     * email if it looks like an address, else SMS.
+     * per-enterprise SMS greenlight (plan §3.4), then reports back which channel it used.
      */
     const pwlessChannel: PwlessChannel =
         pwlessMockChannel ?? (pwlessIdentifier.includes("@") ? "email" : "sms");
@@ -68,6 +70,27 @@ export default function Login(props: PageProps<Extract<KcContext, { pageId: "log
         pwlessChannel === "push" ? msgStr("pwlessCheckPush")
             : pwlessChannel === "email" ? msgStr("pwlessCheckEmail")
                 : msgStr("pwlessCheckSms");
+
+    const pwlessSentKey =
+        pwlessChannel === "push" ? "pwlessSentToPush"
+            : pwlessChannel === "email" ? "pwlessSentToEmail"
+                : "pwlessSentToSms";
+
+    /**
+     * Render a message that embeds the address, with the address itself emphasised.
+     * Split on a sentinel rather than putting markup in the message, so nothing the user
+     * typed can ever be interpreted as HTML.
+     */
+    function withAddress(key: string, addr: string) {
+        const [before, after] = msgStr(key as any, "\u0000").split("\u0000");
+        return (
+            <>
+                {before}
+                <strong className="pwless-address">{addr}</strong>
+                {after ?? ""}
+            </>
+        );
+    }
 
     /**
      * MOCK validation, mirroring the server rule: it is EITHER an email OR a phone.
@@ -82,10 +105,11 @@ export default function Login(props: PageProps<Extract<KcContext, { pageId: "log
         return s.replace(/\D/g, "").length >= 8;
     }
 
-    /** Entry link is pure navigation — no validation here. */
+    /** Entry link is pure navigation — no validation, no error. */
     function pwlessOpen() {
         setPwlessIdentifier(usernameInput.current?.value?.trim() ?? "");
         setPwlessState("idle");
+        setPwlessResent(false);
         setPwlessView("request");
     }
 
@@ -102,9 +126,10 @@ export default function Login(props: PageProps<Extract<KcContext, { pageId: "log
         }, 1000);
     }
 
-    function pwlessSend() {
-        // MOCK: nothing is sent. Mirrors the real states so the flow can be judged.
-        const typed = (pwlessFieldRef.current?.value ?? pwlessIdentifier).trim();
+    /** MOCK: nothing is sent. `resent` drives the "the previous link stops working" copy. */
+    function pwlessSend(from: "request" | "recovery" | "resend") {
+        const ref = from === "recovery" ? pwlessRecoveryFieldRef : pwlessFieldRef;
+        const typed = (from === "resend" ? pwlessIdentifier : ref.current?.value ?? pwlessIdentifier).trim();
         if (!typed) {
             setPwlessState("missing");
             return;
@@ -117,24 +142,22 @@ export default function Login(props: PageProps<Extract<KcContext, { pageId: "log
         setPwlessState("sending");
         window.setTimeout(() => {
             setPwlessState("waiting");
+            setPwlessResent(from !== "request");
             setPwlessView("sent");
             pwlessStartCooldown();
         }, 700);
     }
 
-    /** Recovery screen: the address is already known, so this is one button. */
-    function pwlessRecoverySend() {
-        setPwlessState("sending");
-        window.setTimeout(() => {
-            setPwlessState("waiting");
-            setPwlessView("sent");
-            pwlessStartCooldown();
-        }, 700);
+    /** "Endre adresse" — back to the ask step, address kept so it can be corrected. */
+    function pwlessEditAddress() {
+        setPwlessState("idle");
+        setPwlessView("request");
     }
 
     function pwlessCancel() {
         setPwlessView("off");
         setPwlessState("idle");
+        setPwlessResent(false);
         setPwlessCooldown(0);
     }
 
@@ -143,13 +166,32 @@ export default function Login(props: PageProps<Extract<KcContext, { pageId: "log
     // in a .iti div outside React's knowledge — unmounting it throws NotFoundError). Hide, never unmount.
     const hideCredentialForm = pwlessView !== "off";
 
-    // "expired" is no longer an inline message — it is its own screen (§3.5).
     const pwlessStatusText =
         pwlessState === "missing" ? msgStr("pwlessMissingIdentifier")
             : pwlessState === "invalid" ? msgStr("pwlessInvalid")
                 : pwlessState === "ratelimited" ? msgStr("pwlessRateLimited")
                     : pwlessState === "error" ? msgStr("pwlessError")
                         : "";
+
+    const pwlessMailIcon = (
+        <div className="pwless-icon pwless-icon--ok" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="26" height="26" fill="none"
+                 stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="2.5" y="5" width="19" height="14" rx="2.5"/>
+                <path d="M3 7l9 6 9-6"/>
+            </svg>
+        </div>
+    );
+
+    const pwlessDeadIcon = (
+        <div className="pwless-icon pwless-icon--dead" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="26" height="26" fill="none"
+                 stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M12 3.8L1.8 20.2h20.4L12 3.8z"/>
+                <path d="M12 10v4.2M12 17.4h.01"/>
+            </svg>
+        </div>
+    );
 
     /**
      * Which IdP to mark "· sist brukt". Phase 5 reads this from a cookie the server sets;
@@ -159,7 +201,7 @@ export default function Login(props: PageProps<Extract<KcContext, { pageId: "log
         ((kcContext as any).lastUsedIdp as string | undefined) ??
         (typeof window !== "undefined" ? window.localStorage?.getItem("excite.lastIdp") ?? undefined : undefined);
 
-    /** The login-page entry point — a text link at the bottom, NOT a second button (§3.5). */
+    /** Entry point — a text link BELOW the IdP buttons (§3.5), so the page keeps ONE primary button. */
     const pwlessLink = (
         <span
             id="trigger-passwordless-link"
@@ -178,63 +220,112 @@ export default function Login(props: PageProps<Extract<KcContext, { pageId: "log
         </span>
     );
 
-    /** The dedicated passwordless screen: ask → confirm, plus recovery. */
+    const pwlessBackLink = (
+        <span className="pwless-back" role="link" tabIndex={0}
+              onClick={pwlessCancel}
+              onKeyDown={e => {
+                  if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      pwlessCancel();
+                  }
+              }}>
+            {"← " + msgStr("pwlessBack")}
+        </span>
+    );
+
+    const pwlessUsePasswordLink = (
+        <span className="pwless-alt-link" role="link" tabIndex={0}
+              onClick={pwlessCancel}
+              onKeyDown={e => {
+                  if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      pwlessCancel();
+                  }
+              }}>
+            {msgStr("pwlessUsePassword")}
+        </span>
+    );
+
+    /** The dedicated passwordless screens. */
     const pwlessPage = (
         <div id="pwless-page" hidden={pwlessView === "off"}>
-            <p className="pwless-intro" hidden={pwlessView === "recovery"}>{msgStr("pwlessIntro")}</p>
 
-            {/* STEP 1 — ask */}
-            <div className="pwless-step" hidden={pwlessView !== "request"}>
+            {/* STEP 2 — ask. One field, already filled in from step 1. */}
+            <div className="pwless-step pwless-step--left" hidden={pwlessView !== "request"}>
+                {pwlessBackLink}
+                <h2 className="pwless-title">{msgStr("pwlessTitle")}</h2>
+                <p className="pwless-intro">{msgStr("pwlessIntro")}</p>
                 <div id="pwless-field-wrapper">
                     <input id="pwless-username-input" ref={pwlessFieldRef} data-iti-input
-                           type="text" inputMode="email"
+                           type="text" inputMode="email" autoFocus
                            aria-label={msgStr("pwlessFieldLabel")}
                            placeholder={msgStr("pwlessFieldLabel")}
                            defaultValue={pwlessIdentifier}/>
                 </div>
-                <button type="button" id="pwless-send-btn" onClick={pwlessSend}
+                <p className="pwless-field-hint">{msgStr("pwlessFieldHint")}</p>
+                <button type="button" id="pwless-send-btn" onClick={() => pwlessSend("request")}
                         disabled={pwlessBusy} aria-busy={pwlessBusy}>
                     {msgStr("pwlessSendLink")}
                 </button>
+                {pwlessUsePasswordLink}
             </div>
 
-            {/* STEP 2 — confirm. The address is shown IN FULL: it is what the user just typed,
-                so it reveals nothing, and a typo is the commonest reason the link never lands. */}
+            {/* STEP 3 — the waiting tab. Not a blind alley: it is the receiver. */}
             <div className="pwless-step" hidden={pwlessView !== "sent"}>
-                <div className="pwless-spinner" aria-hidden="true"/>
-                <p className="pwless-check">{pwlessCheckHeading}</p>
+                <div className="pwless-step-top">{pwlessBackLink}</div>
+                {pwlessMailIcon}
+                <h2 className="pwless-title pwless-title--center">
+                    {pwlessResent ? msgStr("pwlessResentTitle") : pwlessCheckHeading}
+                </h2>
                 <p className="pwless-sent-to">
-                    {msgStr("pwlessSentTo")}{" "}
-                    <span className="pwless-address">{pwlessIdentifier}</span>
+                    {withAddress(pwlessResent ? "pwlessResentBody" : pwlessSentKey, pwlessIdentifier)}
                 </p>
-                <p className="pwless-waiting-hint">{msgStr("pwlessWaitingHint")}</p>
-                <p className="pwless-validity">{msgStr("pwlessValidFor")}</p>
-                <button type="button" id="pwless-resend-btn" onClick={pwlessSend}
+                <p className="pwless-live">
+                    <span className="pwless-dot" aria-hidden="true"/>
+                    {msgStr("pwlessWaitingDot")}
+                </p>
+                <p className="pwless-validity">{msgStr("pwlessKeepOpen")}</p>
+                <button type="button" id="pwless-resend-btn" onClick={() => pwlessSend("resend")}
                         disabled={pwlessCooldown > 0}>
                     {pwlessCooldown > 0
                         ? msgStr("pwlessResendIn", String(pwlessCooldown))
                         : msgStr("pwlessResend")}
                 </button>
+                <span className="pwless-alt-link" role="link" tabIndex={0}
+                      onClick={pwlessEditAddress}
+                      onKeyDown={e => {
+                          if (e.key === "Enter" || e.key === " ") {
+                              e.preventDefault();
+                              pwlessEditAddress();
+                          }
+                      }}>
+                    {msgStr("pwlessChangeAddress")}
+                </span>
             </div>
 
-            {/* RECOVERY — reached from an expired or already-used link. Address pre-filled,
-                one button. Never a dead end (§3.5). */}
+            {/* RECOVERY — an expired or already-used link. The address is pre-filled AND editable,
+                because a wrong address is exactly why the link never arrived. */}
             <div className="pwless-step" hidden={pwlessView !== "recovery"}>
-                <p className="pwless-recovery-title">{msgStr("pwlessRecoveryTitle")}</p>
-                <p className="pwless-recovery-intro">{msgStr("pwlessRecoveryIntro")}</p>
-                <div id="pwless-recovery-address" className="pwless-address">{pwlessIdentifier}</div>
-                <button type="button" id="pwless-recovery-btn" onClick={pwlessRecoverySend}
+                {pwlessDeadIcon}
+                <h2 className="pwless-title pwless-title--center">{msgStr("pwlessRecoveryTitle")}</h2>
+                <p className="pwless-intro pwless-intro--center">{msgStr("pwlessRecoveryIntro")}</p>
+                <div id="pwless-recovery-wrapper">
+                    <input id="pwless-recovery-input" ref={pwlessRecoveryFieldRef} data-iti-input
+                           type="text" inputMode="email"
+                           aria-label={msgStr("pwlessFieldLabel")}
+                           placeholder={msgStr("pwlessFieldLabel")}
+                           defaultValue={pwlessIdentifier}/>
+                </div>
+                <button type="button" id="pwless-recovery-btn" onClick={() => pwlessSend("recovery")}
                         disabled={pwlessBusy} aria-busy={pwlessBusy}>
                     {msgStr("pwlessRecoverySend")}
                 </button>
+                {pwlessUsePasswordLink}
             </div>
 
             <p id="passwordless-status" role="status" aria-live="polite"
                className={"pwless-status pwless-status--" + pwlessState}
                hidden={!pwlessStatusText}>{pwlessStatusText}</p>
-
-            <span className="trigger-forgot-password-btn pwless-cancel"
-                  onClick={pwlessCancel}>{msgStr("backToLogin")}</span>
         </div>
     );
 
@@ -378,7 +469,9 @@ export default function Login(props: PageProps<Extract<KcContext, { pageId: "log
                 </div>
             }
             socialProvidersNode={
-                <>
+                /* Hidden on the passwordless screens: each of those is its own full step
+                   (the note's screens 2 and 3), not the login form with something added. */
+                <div className="pwless-hideable" hidden={hideCredentialForm}>
                     {realm.password && social?.providers !== undefined && social.providers.length !== 0 && (
                         <div id="kc-social-providers" className={kcClsx("kcFormSocialAccountSectionClass")}>
                             <hr/>
@@ -410,13 +503,22 @@ export default function Login(props: PageProps<Extract<KcContext, { pageId: "log
                                             {p.alias === lastUsedIdp && (
                                                 <span className="social-lastused">{"\u00b7 " + msgStr("pwlessLastUsed")}</span>
                                             )}
+
                                         </a>
                                     </li>
                                 ))}
                             </ul>
+                            {/* Passordløs innlogging — entry point, BELOW the IdP buttons (§3.5). */}
+                            {pwlessLink}
                         </div>
                     )}
-                </>
+                    {/* No IdPs configured: the link still has to appear. */}
+                    {!(realm.password && social?.providers !== undefined && social.providers.length !== 0) && (
+                        <div id="kc-social-providers" className={kcClsx("kcFormSocialAccountSectionClass")}>
+                            {pwlessLink}
+                        </div>
+                    )}
+                </div>
             }
         >
             {/*    Form shown to user on login*/}
@@ -452,7 +554,6 @@ export default function Login(props: PageProps<Extract<KcContext, { pageId: "log
                     form, which is only hidden (never unmounted — intl-tel-input wraps its input
                     outside React's knowledge). */}
                 {pwlessPage}
-                {pwlessLink}
             </div>
             <div id="kc-form">
                 <div id="kc-form-wrapper">
