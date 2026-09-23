@@ -43,7 +43,34 @@ const {useI18n, ofTypeI18n} = i18nBuilder
             backToApplication: "Tilbake til applikasjon",
             errorTitle: "Vi beklager...",
             loginChooseAuthenticator: "Velg påloggingsmetode",
-            capsWarning: "Caps Lock er på"
+            capsWarning: "Caps Lock er på",
+            // --- Passordløs innlogging (magic link) — Phase 0 copy deck, for review ---
+            pwlessButton: "Logg inn uten passord",
+            pwlessIntro: "Vi sender deg en lenke som logger deg inn.",
+            pwlessFieldLabel: "E-post eller mobilnummer",
+            pwlessSendLink: "Send lenke",
+            pwlessCheckEmail: "Sjekk e-posten din",
+            pwlessCheckSms: "Sjekk SMS-en din",
+            pwlessCheckPush: "Sjekk appen din",
+            // Full address, not masked: we echo back what the user just typed, so it reveals
+            // nothing they don't already know — and a typo is the #1 reason the link never arrives.
+            pwlessSentTo: "Vi sendte en lenke til",
+            pwlessValidFor: "Lenken er gyldig i 10 minutter.",
+            pwlessWaiting: "Venter på at du åpner lenken …",
+            pwlessWaitingHint: "Åpne lenken på enheten der du mottok den. Du blir logget inn her.",
+            pwlessMissingIdentifier: "Fyll inn e-post eller mobilnummer.",
+            pwlessInvalid: "Skriv inn en gyldig e-postadresse eller et mobilnummer.",
+            pwlessResend: "Send på nytt",
+            pwlessResendIn: "Send på nytt om {0} s",
+            pwlessExpired: "Lenken er utløpt. Send en ny.",
+            pwlessError: "Noe gikk galt. Prøv igjen.",
+            pwlessRateLimited: "For mange forsøk. Vent litt før du prøver igjen.",
+            pwlessCancel: "Avbryt",
+            // Recovery — "den viktigste skjermen i hele flyten". Never a dead end.
+            pwlessRecoveryTitle: "Lenken virker ikke lenger",
+            pwlessRecoveryIntro: "Lenker er gyldige i 10 minutter, og kan bare brukes én gang. Vi sender deg en ny.",
+            pwlessRecoverySend: "Send ny lenke",
+            pwlessLastUsed: "sist brukt"
         }
     }).build();
 

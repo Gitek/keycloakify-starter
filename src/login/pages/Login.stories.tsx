@@ -409,3 +409,87 @@ export const WithSocialProvidersAndWithoutRememberMe: Story = {
         />
     )
 };
+
+// ---------------------------------------------------------------------------
+// Passordløs innlogging (magic link) — PHASE 0 VISUAL MOCK
+// Every reviewable state. No backend.
+// Follows plan §3.5: text link at the bottom, full address, 10 min, 45 s resend,
+// plus the recovery screen.
+// ---------------------------------------------------------------------------
+const no = { currentLanguageTag: "no" } as const;
+
+const socials = {
+    displayInfo: true,
+    providers: [
+        { loginUrl: "microsoft", alias: "microsoft", providerId: "microsoft", displayName: "Microsoft", iconClasses: "fa fa-windows" },
+        { loginUrl: "oidc", alias: "oidc", providerId: "oidc", displayName: "Logg inn med SSO", iconClasses: "" }
+    ]
+};
+
+/** The login page as it now ships: one primary button, "Glemt passord?" beside the
+ *  password field, and the passwordless entry as a text link at the bottom. */
+export const Pwless_Entry: Story = {
+    render: () => <KcPageStory kcContext={{ locale: no, social: socials, lastUsedIdp: "microsoft" } as any} />
+};
+
+/** Same, with no IdP marked — confirms the "· sist brukt" marker is not load-bearing. */
+export const Pwless_Entry_NoLastUsed: Story = {
+    render: () => <KcPageStory kcContext={{ locale: no, social: socials } as any} />
+};
+
+/** STEP 1 — the dedicated page, identifier carried over from the login field. */
+export const Pwless_Page_Ask: Story = {
+    render: () => <KcPageStory kcContext={{ locale: no, social: socials,
+        pwlessView: "request", pwlessIdentifier: "kevin@retailx.no" } as any} />
+};
+
+/** STEP 1 — arrived with nothing typed, so the field is empty. */
+export const Pwless_Page_Ask_Empty: Story = {
+    render: () => <KcPageStory kcContext={{ locale: no, social: socials, pwlessView: "request" } as any} />
+};
+
+/** STEP 2 — confirmation, EMAIL. Address in full, resend locked for 45 s. */
+export const Pwless_Page_Sent_Email: Story = {
+    render: () => <KcPageStory kcContext={{ locale: no, social: socials,
+        pwlessView: "sent", pwlessMock: "waiting", pwlessIdentifier: "kevin@retailx.no" } as any} />
+};
+
+/** STEP 2 — a long address, to prove it wraps rather than widening the card. */
+export const Pwless_Page_Sent_LongEmail: Story = {
+    render: () => <KcPageStory kcContext={{ locale: no, social: socials, pwlessView: "sent",
+        pwlessMock: "waiting", pwlessIdentifier: "kevin.alexander.nordmann@retailx-norge.no" } as any} />
+};
+
+/** STEP 2 — confirmation, SMS. Only reached when the user has no email AND the
+ *  enterprise has SMS greenlit (§3.4). */
+export const Pwless_Page_Sent_Sms: Story = {
+    render: () => <KcPageStory kcContext={{ locale: no, social: socials,
+        pwlessView: "sent", pwlessMock: "waiting", pwlessIdentifier: "+4794053096" } as any} />
+};
+
+/** STEP 2 — confirmation, PUSH. The first channel tried for a returning app user. */
+export const Pwless_Page_Sent_Push: Story = {
+    render: () => <KcPageStory kcContext={{ locale: no, social: socials, pwlessView: "sent",
+        pwlessMock: "waiting", pwlessChannel: "push", pwlessIdentifier: "kevin@retailx.no" } as any} />
+};
+
+/** RECOVERY — an expired or already-used link. Address pre-filled, one button. */
+export const Pwless_Page_Recovery: Story = {
+    render: () => <KcPageStory kcContext={{ locale: no, social: socials,
+        pwlessView: "recovery", pwlessMock: "expired", pwlessIdentifier: "kevin@retailx.no" } as any} />
+};
+
+export const Pwless_Page_Empty_Error: Story = {
+    render: () => <KcPageStory kcContext={{ locale: no, social: socials,
+        pwlessView: "request", pwlessMock: "missing" } as any} />
+};
+
+export const Pwless_Page_Invalid_Error: Story = {
+    render: () => <KcPageStory kcContext={{ locale: no, social: socials,
+        pwlessView: "request", pwlessMock: "invalid", pwlessIdentifier: "hallo hallo" } as any} />
+};
+
+export const Pwless_Page_RateLimited: Story = {
+    render: () => <KcPageStory kcContext={{ locale: no, social: socials,
+        pwlessView: "sent", pwlessMock: "ratelimited", pwlessIdentifier: "+4794053096" } as any} />
+};

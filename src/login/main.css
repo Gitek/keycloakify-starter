@@ -214,7 +214,8 @@ They do not effect keycloak when used outside storybook development*/
 }
 
 #shown-username-input,
-#reset-pass-username-input {
+#reset-pass-username-input,
+#pwless-username-input {
     all: unset;
     width: 100%;
     max-width: 100%;
@@ -233,7 +234,8 @@ They do not effect keycloak when used outside storybook development*/
 }
 
 #shown-username-input::placeholder,
-#reset-pass-username-input::placeholder {
+#reset-pass-username-input::placeholder,
+#pwless-username-input::placeholder {
     color: #fff;
 }
 
@@ -292,6 +294,9 @@ They do not effect keycloak when used outside storybook development*/
 
 #trigger-submit-btn,
 #trigger-reset-pass-submit-btn,
+#pwless-send-btn,
+#pwless-resend-btn,
+#pwless-recovery-btn,
 #cancel-password-update-btn {
     all: unset;
     background: #ffffff;
@@ -781,3 +786,182 @@ They do not effect keycloak when used outside storybook development*/
         background-image: url("./assets/flags@2x.png");
     }
 }
+
+/* ===========================================================================
+   Passordløs innlogging (magic link) — Phase 0 visual mock
+   =========================================================================== */
+
+/* The HTML `hidden` attribute must beat our own display rules: an ID selector
+   outranks the UA sheet's `[hidden]{display:none}`, so a hidden element with an
+   explicit `display` would otherwise stay visible. Scoped to this form. */
+.user-shown-form-login [hidden],
+.user-shown-form-login[hidden] { display: none !important; }
+
+/* Resend: secondary treatment (same as #cancel-password-update-btn) */
+#pwless-resend-btn {
+    background-color: rgb(3, 12, 30);
+    color: #fff;
+    border: 2px solid #FFF;
+    font-weight: 600;
+}
+
+/* Entry point — a TEXT LINK at the bottom, not a second button (§3.5). Sits below
+   "Glemt passord?"-sized type and deliberately reads quieter than the primary action. */
+#trigger-passwordless-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: fit-content;
+    margin: 18px auto 0 auto;
+    color: #a5c5f4;
+    font-size: 16px;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    cursor: pointer;
+    user-select: none;
+}
+#trigger-passwordless-link:hover { color: #cfe0fb; }
+#trigger-passwordless-link:focus-visible {
+    outline: 2px solid #a5c5f4;
+    outline-offset: 3px;
+    border-radius: 2px;
+}
+
+/* "Glemt passord?" moved up beside the password field (§3.5) — tighter than the
+   old bottom placement, and right-aligned against the field it belongs to. */
+.trigger-forgot-password-btn.forgot-password--inline {
+    margin: 10px 0 0 auto;
+    justify-content: flex-end;
+    font-size: 15px;
+}
+
+/* "· sist brukt" marker on the IdP the user came back to. */
+.social-lastused {
+    margin-left: 6px;
+    font-size: 13px;
+    font-weight: 400;
+    color: #9aa6bd;
+    white-space: nowrap;
+}
+
+/* `all: unset` also removes the UA disabled styling, so state it explicitly.
+   Deliberately NOT .disabled — that sets pointer-events:none, which makes the
+   control unfocusable and invisible to screen readers. */
+#pwless-send-btn:disabled,
+#pwless-resend-btn:disabled,
+#pwless-recovery-btn:disabled { opacity: .5; cursor: default; }
+
+/* --- the dedicated screen --- */
+#pwless-page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+}
+
+#pwless-page .pwless-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+#pwless-field-wrapper { width: 100%; }
+
+.pwless-intro {
+    margin: 0;
+    text-align: center;
+    font-size: 15px;
+    line-height: 1.5;
+    color: #e8ecf4;
+    max-width: 340px;
+}
+
+.pwless-check {
+    margin: 0 0 6px;
+    text-align: center;
+    font-size: 16px;
+    color: #fff;
+    font-weight: 600;
+}
+/* The address shown back to the user, in full (§3.5). Must wrap: a long address on a
+   360px screen would otherwise push the card sideways. */
+.pwless-sent-to {
+    margin: 0 0 10px;
+    text-align: center;
+    font-size: 15px;
+    color: #cfd6e4;
+    max-width: 320px;
+}
+.pwless-address {
+    font-weight: 600;
+    color: #fff;
+    overflow-wrap: anywhere;
+}
+
+/* --- recovery screen (§3.5) --- */
+.pwless-recovery-title {
+    margin: 0 0 6px;
+    text-align: center;
+    font-size: 18px;
+    font-weight: 600;
+    color: #fff;
+}
+.pwless-recovery-intro {
+    margin: 0 0 14px;
+    text-align: center;
+    font-size: 14px;
+    line-height: 1.5;
+    color: #cfd6e4;
+    max-width: 330px;
+}
+#pwless-recovery-address {
+    margin-bottom: 16px;
+    padding: 12px 18px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.07);
+    font-size: 16px;
+    text-align: center;
+    max-width: 100%;
+}
+
+.pwless-validity {
+    margin: 0 0 14px;
+    text-align: center;
+    font-size: 13px;
+    color: #9aa6bd;
+}
+
+.pwless-waiting-hint {
+    margin: 0 0 8px;
+    text-align: center;
+    font-size: 14px;
+    line-height: 1.5;
+    color: #cfd6e4;
+    max-width: 320px;
+}
+
+.pwless-status {
+    margin: 10px 0 0;
+    text-align: center;
+    font-size: 14px;
+    line-height: 1.4;
+    color: #cfd6e4;
+}
+.pwless-status--missing,
+.pwless-status--invalid,
+.pwless-status--error,
+.pwless-status--ratelimited,
+.pwless-status--expired { color: #ff8a75; }
+
+.pwless-spinner {
+    width: 34px;
+    height: 34px;
+    margin-bottom: 6px;
+    border-radius: 50%;
+    border: 3px solid rgba(255, 255, 255, 0.25);
+    border-top-color: #ffffff;
+    animation: pwless-spin 0.9s linear infinite;
+}
+@keyframes pwless-spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .pwless-spinner { animation: none; } }

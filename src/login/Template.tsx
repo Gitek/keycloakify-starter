@@ -49,14 +49,16 @@ export default function Template(props: TemplateProps<KcContext, I18n>) {
 
     useEffect(() => {
         const observer = new MutationObserver(() => {
-            let input: HTMLInputElement | null = null;
-            if (kcContext.pageId === "login.ftl") {
-                input = (document.getElementById("shown-username-input") as HTMLInputElement);
-            } else if (kcContext.pageId === "login-reset-password.ftl") {
-                input = (document.getElementById("reset-pass-username-input") as HTMLInputElement);
-            }
+            // Capability lookup, NOT a pageId whitelist. Gating on `pageId === "login.ftl"` is what left
+            // other pages without a country picker — the same class of bug that renders an unhandled
+            // page blank. Any page opts in by marking its field with data-iti-input.
+            const inputs = Array.from(document.querySelectorAll<HTMLInputElement>(
+                "#shown-username-input, #reset-pass-username-input, [data-iti-input]"
+            ));
 
-            if (input && !input.dataset.itiInitialized) {
+            inputs.forEach(input => {
+                if (input.dataset.itiInitialized) return;
+
                 // Initializing the country picker
                 const iti = intlTelInput(input, {
                     separateDialCode: false,
@@ -69,9 +71,7 @@ export default function Template(props: TemplateProps<KcContext, I18n>) {
                 function updateCountry() {
                     const area = iti.getSelectedCountryData();
                     const newPrefix = area.dialCode;
-                    if (input) {
-                        input.setAttribute("country-code", newPrefix);
-                    }
+                    input.setAttribute("country-code", newPrefix);
                 }
 
                 input.addEventListener("countrychange", updateCountry);
@@ -81,7 +81,7 @@ export default function Template(props: TemplateProps<KcContext, I18n>) {
 
                 input.dataset.itiInitialized = "true";
                 input.autocomplete = "username";
-            }
+            });
         });
 
         observer.observe(document.body, {childList: true, subtree: true});
