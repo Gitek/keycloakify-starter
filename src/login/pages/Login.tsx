@@ -28,24 +28,27 @@ export default function Login(props: PageProps<Extract<KcContext, { pageId: "log
     // ---------------------------------------------------------------------------
     // Passordløs innlogging — PHASE 0 VISUAL MOCK ONLY.
     // No backend, no network. Local state so every screen can be reviewed.
-    // Stories force a screen via kcContext.pwlessView / pwlessMock / pwlessChannel.
+    // Stories force a screen via kcContext.pwlessView / pwlessMock.
     // Phase 5 replaces the mock handler with a POST to url.loginAction.
     //
-    // Layout and wording follow the screens in Khai's Beslutningsnotat:
-    // entry is a text link BELOW the IdP buttons, each passwordless screen is its own
-    // step with "← Tilbake" at the top, the address is shown in FULL, the link lives
-    // 10 minutes, resend unlocks after 45 s, and a dead link lands on a recovery screen
-    // with the address pre-filled and editable — never a dead end.
+    // Layout follows Khai's Beslutningsnotat: entry is a text link BELOW the IdP buttons,
+    // each screen is its own step with "← Tilbake" at the top, the link lives 10 minutes,
+    // resend unlocks after 45 s, and a dead link lands on a recovery screen with the address
+    // pre-filled and editable — never a dead end.
+    //
+    // The note's "show the full address" was later overturned (DQ8 revision, plan §3.6):
+    // the confirmation names ALL THREE channels and no address, identically for everyone,
+    // so it concedes nothing about whether the account exists.
+    //
+    // Screens: request → sent → recovery, plus the DQ9 code path for an unproven device
+    // and the two device-B screens the link opens (confirm, done).
     // ---------------------------------------------------------------------------
     type PwlessState = "idle" | "missing" | "invalid" | "sending" | "waiting" | "error" | "ratelimited";
     /** Which screen we're on. "off" = the normal login form. */
-    type PwlessView = "off" | "request" | "sent" | "recovery";
-    /** Which channel the message went out on. Server-decided in Phase 4 (§3.4) — mocked here. */
-    type PwlessChannel = "push" | "email" | "sms";
+    type PwlessView = "off" | "request" | "sent" | "recovery" | "code" | "confirm" | "done";
 
     const pwlessMock = (kcContext as any).pwlessMock as PwlessState | undefined;
     const pwlessMockView = (kcContext as any).pwlessView as PwlessView | undefined;
-    const pwlessMockChannel = (kcContext as any).pwlessChannel as PwlessChannel | undefined;
 
     const PWLESS_RESEND_SECONDS = 45;
 
@@ -59,31 +62,22 @@ export default function Login(props: PageProps<Extract<KcContext, { pageId: "log
     const pwlessRecoveryFieldRef = useRef<HTMLInputElement | null>(null);
 
     /**
-     * MOCK channel choice. In production this is NOT ours to make: the plugin hands the user's
-     * contact facts to communication-service, which resolves push → email → SMS and applies the
-     * per-enterprise SMS greenlight (plan §3.4), then reports back which channel it used.
+     * Whether the send has been acknowledged. The send response is deliberately instant and
+     * identical for everyone, so the screen opens on "Sender …" and settles a beat later.
+     * It carries NO channel: the DQ8 revision (§3.6) names all three to everyone, so there is
+     * nothing account-specific to wait for — only the acknowledgement itself.
      */
-    const pwlessChannel: PwlessChannel =
-        pwlessMockChannel ?? (pwlessIdentifier.includes("@") ? "email" : "sms");
+    const [pwlessAcked, setPwlessAcked] = useState<boolean>(
+        ((kcContext as any).pwlessAcked as boolean) ?? pwlessMockView === "sent");
 
     /**
-     * The channel is NOT known when the waiting screen first renders (DQ8 / plan §3.6): the send
-     * response is deliberately instant and identical for everyone, and the resolved channel arrives
-     * on the FIRST POLL. Rendering it immediately would mean resolving before responding, which is
-     * both the inline call §6.1 forbids and a timing channel that discloses what the text withholds.
+     * DQ9: a device that has not been proven for this account gets a typed code instead of a
+     * one-tap link. Stories force it; in Phase 5 the server decides from the signed device cookie.
      */
-    const [pwlessChannelKnown, setPwlessChannelKnown] = useState<boolean>(
-        ((kcContext as any).pwlessChannelKnown as boolean) ?? pwlessMockView === "sent");
+    const pwlessDeviceProven = ((kcContext as any).pwlessDeviceProven as boolean) ?? true;
+    const pwlessCodeRef = useRef<HTMLInputElement | null>(null);
+    const [pwlessRemember, setPwlessRemember] = useState(false);
 
-    const pwlessCheckHeading =
-        pwlessChannel === "push" ? msgStr("pwlessCheckPush")
-            : pwlessChannel === "email" ? msgStr("pwlessCheckEmail")
-                : msgStr("pwlessCheckSms");
-
-    const pwlessSentKey =
-        pwlessChannel === "push" ? "pwlessSentToPush"
-            : pwlessChannel === "email" ? "pwlessSentToEmail"
-                : "pwlessSentToSms";
 
     /**
      * MOCK validation, mirroring the server rule: it is EITHER an email OR a phone.
@@ -136,11 +130,12 @@ export default function Login(props: PageProps<Extract<KcContext, { pageId: "log
         window.setTimeout(() => {
             setPwlessState("waiting");
             setPwlessResent(from !== "request");
-            setPwlessView("sent");
-            setPwlessChannelKnown(false);
+            // DQ9: an unproven device never sees a link — it would only land on this screen anyway.
+            setPwlessView(pwlessDeviceProven ? "sent" : "code");
+            setPwlessAcked(false);
             pwlessStartCooldown();
             // MOCK of the first poll coming back with the resolved channel.
-            window.setTimeout(() => setPwlessChannelKnown(true), 1200);
+            window.setTimeout(() => setPwlessAcked(true), 1200);
         }, 700);
     }
 
@@ -271,13 +266,13 @@ export default function Login(props: PageProps<Extract<KcContext, { pageId: "log
                 <div className="pwless-step-top">{pwlessBackLink}</div>
                 {pwlessMailIcon}
                 <h2 className="pwless-title pwless-title--center">
-                    {!pwlessChannelKnown ? msgStr("pwlessSending")
+                    {!pwlessAcked ? msgStr("pwlessSending")
                         : pwlessResent ? msgStr("pwlessResentTitle")
-                            : pwlessCheckHeading}
+                            : msgStr("pwlessCheckAll")}
                 </h2>
                 <p className="pwless-sent-to">
-                    {!pwlessChannelKnown ? msgStr("pwlessSendingBody")
-                        : msgStr((pwlessResent ? "pwlessResentBody" : pwlessSentKey) as any)}
+                    {!pwlessAcked ? msgStr("pwlessSendingBody")
+                        : msgStr(pwlessResent ? "pwlessResentBody" : "pwlessSentToAll")}
                 </p>
                 <p className="pwless-live">
                     <span className="pwless-dot" aria-hidden="true"/>
@@ -286,7 +281,7 @@ export default function Login(props: PageProps<Extract<KcContext, { pageId: "log
                 <p className="pwless-validity">{msgStr("pwlessKeepOpen")}</p>
                 {/* The way out for the person who mistyped: nothing else on this screen
                     explains why a link they are entitled to never arrived. */}
-                <p className="pwless-typo-hint" hidden={!pwlessChannelKnown}>{msgStr("pwlessTypoHint")}</p>
+                <p className="pwless-typo-hint" hidden={!pwlessAcked}>{msgStr("pwlessTypoHint")}</p>
                 <button type="button" id="pwless-resend-btn" onClick={() => pwlessSend("resend")}
                         disabled={pwlessCooldown > 0}>
                     {pwlessCooldown > 0
@@ -323,6 +318,58 @@ export default function Login(props: PageProps<Extract<KcContext, { pageId: "log
                     {msgStr("pwlessRecoverySend")}
                 </button>
                 {pwlessUsePasswordLink}
+            </div>
+
+            {/* CODE — DQ9. Shown when the device has not been proven for this account.
+                §3.7 says this is the COMMON path, not an edge case. The code is typed HERE,
+                where the login began, which is what binds approver to requester. */}
+            <div className="pwless-step" hidden={pwlessView !== "code"}>
+                {pwlessBackLink}
+                <h2 className="pwless-title">{msgStr("pwlessCodeTitle")}</h2>
+                <p className="pwless-intro">{msgStr("pwlessCodeIntro")}</p>
+                <div id="pwless-code-wrapper">
+                    <input id="pwless-code-input" ref={pwlessCodeRef}
+                           type="text" inputMode="numeric" autoComplete="one-time-code"
+                           maxLength={6} pattern="[0-9]*"
+                           aria-label={msgStr("pwlessCodeLabel")}
+                           placeholder={msgStr("pwlessCodeLabel")}/>
+                </div>
+                <label className="pwless-remember">
+                    <input type="checkbox" checked={pwlessRemember}
+                           onChange={e => setPwlessRemember(e.target.checked)}/>
+                    <span>
+                        {msgStr("pwlessRemember")}
+                        <small>{msgStr("pwlessRememberHint")}</small>
+                    </span>
+                </label>
+                <button type="button" id="pwless-code-btn" disabled={pwlessBusy}>
+                    {msgStr("pwlessCodeSubmit")}
+                </button>
+                <button type="button" id="pwless-code-resend" onClick={() => pwlessSend("resend")}
+                        disabled={pwlessCooldown > 0}>
+                    {pwlessCooldown > 0
+                        ? msgStr("pwlessResendCodeIn", String(pwlessCooldown))
+                        : msgStr("pwlessResendCode")}
+                </button>
+                {pwlessUsePasswordLink}
+            </div>
+
+            {/* DEVICE B — the page the link opens. The GET only verifies and draws this;
+                the POST behind the button is what consumes the token (§3.8). Nothing else may. */}
+            <div className="pwless-step" hidden={pwlessView !== "confirm"}>
+                {pwlessMailIcon}
+                <h2 className="pwless-title pwless-title--center">{msgStr("pwlessConfirmTitle")}</h2>
+                <p className="pwless-intro pwless-intro--center">{msgStr("pwlessConfirmBody")}</p>
+                <button type="button" id="pwless-confirm-btn">{msgStr("pwlessConfirmBtn")}</button>
+                <span className="pwless-alt-link" role="link" tabIndex={0}>
+                    {msgStr("pwlessConfirmDeny")}
+                </span>
+            </div>
+
+            <div className="pwless-step" hidden={pwlessView !== "done"}>
+                {pwlessMailIcon}
+                <h2 className="pwless-title pwless-title--center">{msgStr("pwlessDoneTitle")}</h2>
+                <p className="pwless-intro pwless-intro--center">{msgStr("pwlessDoneBody")}</p>
             </div>
 
             <p id="passwordless-status" role="status" aria-live="polite"

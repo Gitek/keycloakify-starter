@@ -309,6 +309,9 @@ body:has([class*="user-shown-form"]) #kc-passwd-update-form {
 #pwless-send-btn,
 #pwless-resend-btn,
 #pwless-recovery-btn,
+#pwless-code-btn,
+#pwless-code-resend,
+#pwless-confirm-btn,
 #cancel-password-update-btn {
     all: unset;
     background: #ffffff;
@@ -811,6 +814,7 @@ body:has([class*="user-shown-form"]) #kc-passwd-update-form {
 .pwless-hideable[hidden] { display: none !important; }
 
 /* Resend: secondary treatment (same as #cancel-password-update-btn) */
+#pwless-code-resend,
 #pwless-resend-btn {
     background-color: rgb(3, 12, 30);
     color: #fff;
@@ -864,6 +868,8 @@ body:has([class*="user-shown-form"]) #kc-passwd-update-form {
 /* `all: unset` also removes the UA disabled styling, so state it explicitly.
    Deliberately NOT .disabled — that sets pointer-events:none, which makes the
    control unfocusable and invisible to screen readers. */
+#pwless-code-btn:disabled,
+#pwless-code-resend:disabled,
 #pwless-send-btn:disabled,
 #pwless-resend-btn:disabled,
 #pwless-recovery-btn:disabled { opacity: .5; cursor: default; }
@@ -987,6 +993,54 @@ body:has([class*="user-shown-form"]) #kc-passwd-update-form {
     color: #9aa6bd;
     max-width: 320px;
 }
+
+#pwless-code-wrapper { width: 100%; }
+
+/* The code field is the one place a user types a secret, so it gets its own treatment:
+   wide tracking, centred, numeric. autocomplete="one-time-code" lets iOS and Android
+   offer the code straight from the message. */
+#pwless-code-input {
+    all: unset;
+    box-sizing: border-box;
+    width: 100%;
+    min-height: 50px;
+    padding: 0 18px;
+    border-radius: 30px;
+    background-color: #1b2540;
+    color: #fff;
+    font-size: 22px;
+    font-weight: 600;
+    letter-spacing: 0.4em;
+    text-align: center;
+}
+#pwless-code-input::placeholder {
+    font-size: 15px;
+    font-weight: 400;
+    letter-spacing: normal;
+    color: #8c98b0;
+}
+
+/* Opt-in, default off. UX rather than a control — people should know when a machine
+   starts remembering them — so nothing depends on it being ticked correctly. */
+.pwless-remember {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    width: 100%;
+    margin: 14px 0 18px;
+    font-size: 14px;
+    color: #cfd6e4;
+    cursor: pointer;
+}
+.pwless-remember input { margin-top: 3px; flex: 0 0 auto; }
+.pwless-remember small {
+    display: block;
+    margin-top: 2px;
+    font-size: 12px;
+    color: #9aa6bd;
+}
+
+#pwless-code-resend { margin-top: 12px; }
 
 .pwless-typo-hint {
     margin: 0 0 16px;

@@ -58,21 +58,17 @@ const {useI18n, ofTypeI18n} = i18nBuilder
             pwlessUsePassword: "Logg inn med passord i stedet",
             pwlessChangeAddress: "Endre adresse",
 
-            // Confirmation
-            pwlessCheckEmail: "Sjekk e-posten din",
-            pwlessCheckSms: "Sjekk SMS-en din",
-            pwlessCheckPush: "Sjekk appen din",
-            // The CHANNEL, never the address (DQ8 / plan §3.6). Enough to know where to look;
-            // an address would let anyone with a phone list harvest the email behind it.
-            pwlessSending: "Sender lenke …",
+            // Confirmation — ALL THREE channels, identical for every request.
+            // The DQ8 revision of 2026-09-23 reversed the earlier channel-specific wording:
+            // naming the resolved channel conceded that the account exists, and this does not,
+            // while still telling the user where to look. See plan §3.6.
+            pwlessCheckAll: "Sjekk appen, e-posten eller SMS-en din",
+            pwlessSending: "Sender …",
             pwlessSendingBody: "Vi finner ut hvor vi best får tak i deg.",
-            pwlessTypoHint: "Fikk du ingenting? Sjekk at du skrev riktig, og prøv igjen.",
-            // "Hvis kontoen finnes" is shown to everyone, existing or not. It does NOT restore the
-            // uniform response — the channel above still varies — but it is honest, and it is the
-            // only thing on the screen that explains a typo to the person who made one.
-            pwlessSentToEmail: "Hvis kontoen finnes, har vi sendt deg en lenke dit. Trykk på knappen i e-posten, så logger vi deg inn her.",
-            pwlessSentToSms: "Hvis kontoen finnes, har vi sendt deg en lenke dit. Trykk på lenken i meldingen, så logger vi deg inn her.",
-            pwlessSentToPush: "Hvis kontoen finnes, har vi sendt deg et varsel. Trykk på det, så logger vi deg inn her.",
+            pwlessTypoHint: "Fikk du ingenting? Sjekk søppelposten, og at du skrev riktig.",
+            // "Hvis kontoen finnes" is shown to everyone. Under the earlier design it was hedging,
+            // because the heading above had already conceded existence. It now does real work.
+            pwlessSentToAll: "Hvis kontoen finnes, har vi sendt deg en lenke. Trykk på den, så logger vi deg inn her.",
             pwlessWaitingDot: "Venter på at du trykker på lenken",
             pwlessKeepOpen: "Du kan la denne siden stå åpen. Lenken virker i 10 minutter.",
             pwlessResend: "Send ny lenke",
@@ -81,6 +77,31 @@ const {useI18n, ofTypeI18n} = i18nBuilder
             // Resent — says out loud that the previous link is now dead, so nobody hunts for it.
             pwlessResentTitle: "Ny lenke er sendt",
             pwlessResentBody: "Se etter den nyeste. Den forrige lenken slutter å virke nå.",
+
+            // Code path (DQ9) — an unproven device types a code instead of tapping a link.
+            // §3.7 says this will be the COMMON path, not an edge case: cookies are lost to
+            // private windows, new phones, cleared browsers and shared machines.
+            pwlessCodeTitle: "Skriv inn koden",
+            pwlessCodeIntro: "Hvis kontoen finnes, har vi sendt deg en sekssifret kode. Skriv den inn her.",
+            pwlessCodeLabel: "Sekssifret kode",
+            pwlessCodeSubmit: "Logg inn",
+            pwlessCodeWrong: "Feil kode. Prøv igjen.",
+            pwlessCodeSpent: "For mange forsøk. Be om en ny kode.",
+            // The code screen resends a CODE, not a link — reusing pwlessResend here said "lenke"
+            // on a screen that has none.
+            pwlessResendCode: "Send ny kode",
+            pwlessResendCodeIn: "Send ny kode om {0} s",
+            pwlessRemember: "Husk denne enheten",
+            pwlessRememberHint: "Neste gang holder det å trykke på en lenke.",
+
+            // Device B — the confirm page the link opens. The POST here is what consumes the
+            // token; the GET only verifies and draws (plan §3.8). Nothing else may consume it.
+            pwlessConfirmTitle: "Logg inn på Excite?",
+            pwlessConfirmBody: "Noen har bedt om å logge inn. Var det deg, trykker du på knappen under.",
+            pwlessConfirmBtn: "Ja, logg meg inn",
+            pwlessConfirmDeny: "Nei, det var ikke meg",
+            pwlessDoneTitle: "Du er logget inn",
+            pwlessDoneBody: "Gå tilbake til skjermen der du startet. Den fortsetter av seg selv.",
 
             // Recovery — "den viktigste skjermen i hele flyten". Never a dead end.
             pwlessRecoveryTitle: "Lenken virker ikke lenger",

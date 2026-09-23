@@ -448,35 +448,41 @@ export const Pwless_Page_Ask_Empty: Story = {
     render: () => <KcPageStory kcContext={{ locale: no, social: socials, pwlessView: "request" } as any} />
 };
 
-/** STEP 2 — confirmation, EMAIL. Address in full, resend locked for 45 s. */
-export const Pwless_Page_Sent_Email: Story = {
-    render: () => <KcPageStory kcContext={{ locale: no, social: socials,
-        pwlessView: "sent", pwlessMock: "waiting", pwlessIdentifier: "khai@retailx.no" } as any} />
-};
-
-/** STEP 2 — confirmation, SMS. Only reached when the user has no email AND the
- *  enterprise has SMS greenlit (§3.4). */
-export const Pwless_Page_Sent_Sms: Story = {
-    render: () => <KcPageStory kcContext={{ locale: no, social: socials,
-        pwlessView: "sent", pwlessMock: "waiting", pwlessIdentifier: "+4794053096" } as any} />
-};
-
-/** STEP 2 — confirmation, PUSH. The first channel tried for a returning app user. */
-export const Pwless_Page_Sent_Push: Story = {
-    render: () => <KcPageStory kcContext={{ locale: no, social: socials, pwlessView: "sent",
-        pwlessMock: "waiting", pwlessChannel: "push", pwlessIdentifier: "khai@retailx.no" } as any} />
-};
-
-/** STEP 3, before the first poll answers — the channel is not known yet. */
+/** STEP 3, before the send is acknowledged. */
 export const Pwless_Page_Sending: Story = {
     render: () => <KcPageStory kcContext={{ locale: no, social: socials, pwlessView: "sent",
-        pwlessMock: "waiting", pwlessChannelKnown: false, pwlessIdentifier: "khai@retailx.no" } as any} />
+        pwlessMock: "waiting", pwlessAcked: false, pwlessIdentifier: "khai@retailx.no" } as any} />
+};
+
+/** STEP 3 — the confirmation. Identical for every request: all three channels, no address,
+ *  nothing conceded about whether the account exists (DQ8 revision, plan §3.6). */
+export const Pwless_Page_Sent: Story = {
+    render: () => <KcPageStory kcContext={{ locale: no, social: socials,
+        pwlessView: "sent", pwlessMock: "waiting", pwlessIdentifier: "khai@retailx.no" } as any} />
 };
 
 /** STEP 3, RESENT — says out loud that the previous link is now dead. */
 export const Pwless_Page_Resent: Story = {
     render: () => <KcPageStory kcContext={{ locale: no, social: socials, pwlessView: "sent",
         pwlessMock: "waiting", pwlessResent: true, pwlessIdentifier: "khai@retailx.no" } as any} />
+};
+
+/** CODE — DQ9. What an UNPROVEN device gets instead of a link. Plan §3.7 says this is the
+ *  common path, not an edge case: cookies are lost constantly. */
+export const Pwless_Page_Code: Story = {
+    render: () => <KcPageStory kcContext={{ locale: no, social: socials,
+        pwlessView: "code", pwlessIdentifier: "khai@retailx.no" } as any} />
+};
+
+/** DEVICE B — the page the link opens. The GET draws this; the POST behind the button
+ *  is what consumes the token (plan §3.8). The most security-load-bearing screen here. */
+export const Pwless_DeviceB_Confirm: Story = {
+    render: () => <KcPageStory kcContext={{ locale: no, social: socials, pwlessView: "confirm" } as any} />
+};
+
+/** DEVICE B — after confirming. The original screen continues on its own. */
+export const Pwless_DeviceB_Done: Story = {
+    render: () => <KcPageStory kcContext={{ locale: no, social: socials, pwlessView: "done" } as any} />
 };
 
 /** RECOVERY — an expired or already-used link. Address pre-filled AND editable. */
