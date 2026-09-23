@@ -42,10 +42,20 @@ They do not effect keycloak when used outside storybook development*/
 
 /*End of Country Code Picker styles*/
 
-/*Hiding default keycloak forms*/
-#kc-form,
-#kc-reset-password-form,
-#kc-passwd-update-form {
+/* Hide Keycloak's default forms — but ONLY on pages we actually replaced.
+   This used to be unconditional, which is what made the Organizations incident a blank
+   page: enabling Organizations served `login-username.ftl`, KcPage had no case for it,
+   it fell through to DefaultPage, DefaultPage renders into #kc-form, and #kc-form was
+   hidden. The user saw a login page with no fields.
+   Every page we implement renders a `user-shown-form-*` element, so that is the signal:
+   a custom form is present, therefore hide the default one. An unhandled page has no
+   such element, keeps Keycloak's own form, and is ugly rather than broken.
+   Phase 5 adds five new pageIds to this theme, so this has to hold before then.
+   If :has() were ever unsupported the whole rule drops and both forms render — still
+   functional, which is the right direction to fail in. */
+body:has([class*="user-shown-form"]) #kc-form,
+body:has([class*="user-shown-form"]) #kc-reset-password-form,
+body:has([class*="user-shown-form"]) #kc-passwd-update-form {
     display: none;
 }
 

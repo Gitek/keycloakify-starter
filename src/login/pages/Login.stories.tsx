@@ -499,3 +499,13 @@ export const Pwless_Page_RateLimited: Story = {
     render: () => <KcPageStory kcContext={{ locale: no, social: socials,
         pwlessView: "sent", pwlessMock: "ratelimited", pwlessIdentifier: "+4794053096" } as any} />
 };
+
+/**
+ * NOT a login story — a guard. `login-username.ftl` is the page Organizations served when it
+ * was enabled, and this theme has no case for it, so it falls through to DefaultPage. It must
+ * render Keycloak's own form rather than nothing. If this comes back blank, the fail-blank fix
+ * in main.css has regressed and Phase 5's five new pages are unsafe to add.
+ */
+export const Unhandled_PageId_MustNotBeBlank: Story = {
+    render: () => <KcPageStory kcContext={{ locale: no, pageId: "login-username.ftl" } as any} />
+};
