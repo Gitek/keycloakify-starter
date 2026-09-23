@@ -454,12 +454,6 @@ export const Pwless_Page_Sent_Email: Story = {
         pwlessView: "sent", pwlessMock: "waiting", pwlessIdentifier: "khai@retailx.no" } as any} />
 };
 
-/** STEP 2 — a long address, to prove it wraps rather than widening the card. */
-export const Pwless_Page_Sent_LongEmail: Story = {
-    render: () => <KcPageStory kcContext={{ locale: no, social: socials, pwlessView: "sent",
-        pwlessMock: "waiting", pwlessIdentifier: "khai.alexander.nordmann@retailx-norge.no" } as any} />
-};
-
 /** STEP 2 — confirmation, SMS. Only reached when the user has no email AND the
  *  enterprise has SMS greenlit (§3.4). */
 export const Pwless_Page_Sent_Sms: Story = {
@@ -471,6 +465,12 @@ export const Pwless_Page_Sent_Sms: Story = {
 export const Pwless_Page_Sent_Push: Story = {
     render: () => <KcPageStory kcContext={{ locale: no, social: socials, pwlessView: "sent",
         pwlessMock: "waiting", pwlessChannel: "push", pwlessIdentifier: "khai@retailx.no" } as any} />
+};
+
+/** STEP 3, before the first poll answers — the channel is not known yet. */
+export const Pwless_Page_Sending: Story = {
+    render: () => <KcPageStory kcContext={{ locale: no, social: socials, pwlessView: "sent",
+        pwlessMock: "waiting", pwlessChannelKnown: false, pwlessIdentifier: "khai@retailx.no" } as any} />
 };
 
 /** STEP 3, RESENT — says out loud that the previous link is now dead. */

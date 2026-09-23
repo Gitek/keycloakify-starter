@@ -62,11 +62,13 @@ const {useI18n, ofTypeI18n} = i18nBuilder
             pwlessCheckEmail: "Sjekk e-posten din",
             pwlessCheckSms: "Sjekk SMS-en din",
             pwlessCheckPush: "Sjekk appen din",
-            // Address shown in FULL — we echo what the user typed, so it reveals nothing they
-            // don't know, and a typo is the commonest reason the link never arrives.
-            pwlessSentToEmail: "Vi sendte en lenke til {0}. Trykk på knappen i e-posten, så logger vi deg inn her.",
-            pwlessSentToSms: "Vi sendte en lenke til {0}. Trykk på lenken i meldingen, så logger vi deg inn her.",
-            pwlessSentToPush: "Vi sendte en lenke til appen på {0}. Trykk på varselet, så logger vi deg inn her.",
+            // The CHANNEL, never the address (DQ8 / plan §3.6). Enough to know where to look;
+            // an address would let anyone with a phone list harvest the email behind it.
+            pwlessSending: "Sender lenke …",
+            pwlessSendingBody: "Vi finner ut hvor vi best får tak i deg.",
+            pwlessSentToEmail: "Vi sendte deg en lenke. Trykk på knappen i e-posten, så logger vi deg inn her.",
+            pwlessSentToSms: "Vi sendte deg en lenke. Trykk på lenken i meldingen, så logger vi deg inn her.",
+            pwlessSentToPush: "Vi sendte deg et varsel i appen. Trykk på det, så logger vi deg inn her.",
             pwlessWaitingDot: "Venter på at du trykker på lenken",
             pwlessKeepOpen: "Du kan la denne siden stå åpen. Lenken virker i 10 minutter.",
             pwlessResend: "Send ny lenke",
@@ -74,7 +76,7 @@ const {useI18n, ofTypeI18n} = i18nBuilder
 
             // Resent — says out loud that the previous link is now dead, so nobody hunts for it.
             pwlessResentTitle: "Ny lenke er sendt",
-            pwlessResentBody: "Sjekk {0} igjen. Den forrige lenken slutter å virke nå.",
+            pwlessResentBody: "Se etter den nyeste. Den forrige lenken slutter å virke nå.",
 
             // Recovery — "den viktigste skjermen i hele flyten". Never a dead end.
             pwlessRecoveryTitle: "Lenken virker ikke lenger",

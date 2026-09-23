@@ -66,6 +66,15 @@ export default function Login(props: PageProps<Extract<KcContext, { pageId: "log
     const pwlessChannel: PwlessChannel =
         pwlessMockChannel ?? (pwlessIdentifier.includes("@") ? "email" : "sms");
 
+    /**
+     * The channel is NOT known when the waiting screen first renders (DQ8 / plan §3.6): the send
+     * response is deliberately instant and identical for everyone, and the resolved channel arrives
+     * on the FIRST POLL. Rendering it immediately would mean resolving before responding, which is
+     * both the inline call §6.1 forbids and a timing channel that discloses what the text withholds.
+     */
+    const [pwlessChannelKnown, setPwlessChannelKnown] = useState<boolean>(
+        ((kcContext as any).pwlessChannelKnown as boolean) ?? pwlessMockView === "sent");
+
     const pwlessCheckHeading =
         pwlessChannel === "push" ? msgStr("pwlessCheckPush")
             : pwlessChannel === "email" ? msgStr("pwlessCheckEmail")
@@ -75,22 +84,6 @@ export default function Login(props: PageProps<Extract<KcContext, { pageId: "log
         pwlessChannel === "push" ? "pwlessSentToPush"
             : pwlessChannel === "email" ? "pwlessSentToEmail"
                 : "pwlessSentToSms";
-
-    /**
-     * Render a message that embeds the address, with the address itself emphasised.
-     * Split on a sentinel rather than putting markup in the message, so nothing the user
-     * typed can ever be interpreted as HTML.
-     */
-    function withAddress(key: string, addr: string) {
-        const [before, after] = msgStr(key as any, "\u0000").split("\u0000");
-        return (
-            <>
-                {before}
-                <strong className="pwless-address">{addr}</strong>
-                {after ?? ""}
-            </>
-        );
-    }
 
     /**
      * MOCK validation, mirroring the server rule: it is EITHER an email OR a phone.
@@ -144,7 +137,10 @@ export default function Login(props: PageProps<Extract<KcContext, { pageId: "log
             setPwlessState("waiting");
             setPwlessResent(from !== "request");
             setPwlessView("sent");
+            setPwlessChannelKnown(false);
             pwlessStartCooldown();
+            // MOCK of the first poll coming back with the resolved channel.
+            window.setTimeout(() => setPwlessChannelKnown(true), 1200);
         }, 700);
     }
 
@@ -275,10 +271,13 @@ export default function Login(props: PageProps<Extract<KcContext, { pageId: "log
                 <div className="pwless-step-top">{pwlessBackLink}</div>
                 {pwlessMailIcon}
                 <h2 className="pwless-title pwless-title--center">
-                    {pwlessResent ? msgStr("pwlessResentTitle") : pwlessCheckHeading}
+                    {!pwlessChannelKnown ? msgStr("pwlessSending")
+                        : pwlessResent ? msgStr("pwlessResentTitle")
+                            : pwlessCheckHeading}
                 </h2>
                 <p className="pwless-sent-to">
-                    {withAddress(pwlessResent ? "pwlessResentBody" : pwlessSentKey, pwlessIdentifier)}
+                    {!pwlessChannelKnown ? msgStr("pwlessSendingBody")
+                        : msgStr((pwlessResent ? "pwlessResentBody" : pwlessSentKey) as any)}
                 </p>
                 <p className="pwless-live">
                     <span className="pwless-dot" aria-hidden="true"/>
