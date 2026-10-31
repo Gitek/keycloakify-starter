@@ -61,6 +61,24 @@ export default function Login(props: PageProps<Extract<KcContext, { pageId: "log
     }
 
     function triggerLoginSubmit() {
+        // Keycloak already owns the selected identity during reauthentication.
+        // In that mode it omits the username control, so submission must not
+        // depend on either username ref being mounted.
+        if (usernameHidden) {
+            if (!loginForm.current || !kcPasswordInput.current || !passwordInput.current) return;
+            kcPasswordInput.current.value = passwordInput.current.value;
+            if (kcPasswordInput.current.value === "") {
+                passwordInput.current.focus();
+                return;
+            }
+            const shownSubmitBtn = document.getElementById("trigger-submit-btn");
+            if (shownSubmitBtn) {
+                shownSubmitBtn.innerHTML = `<span id="spinner"></span>`;
+                shownSubmitBtn.classList.add("disabled");
+            }
+            loginForm.current.submit();
+            return;
+        }
         if (loginForm.current && kcPasswordInput.current && kcUsernameInput.current && passwordInput.current && usernameInput.current) {
             if (kcPasswordInput.current.value != "" && kcUsernameInput.current.value != "") {
                 // Submit keycloak Login form
@@ -206,10 +224,10 @@ export default function Login(props: PageProps<Extract<KcContext, { pageId: "log
             {/*    Form shown to user on login*/}
             <div className="user-shown-form-login">
 
-                <div id={"username-wrapper"}>
+                {!usernameHidden && <div id={"username-wrapper"}>
                     <input id={"shown-username-input"} ref={usernameInput} type={"username"}
                            placeholder={msgStr("usernameOrEmail")} onInput={updateUsernameField} onKeyDown={keydownHandler}/>
-                </div>
+                </div>}
                 <div id={"password-wrapper"}>
                     <input id={"shown-password-input"} ref={passwordInput} type={"password"}
                            placeholder={msgStr("password")} onInput={updatePasswordField} onKeyDown={keydownHandler}/>
